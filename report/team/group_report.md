@@ -67,20 +67,6 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 | v2 | system_prompt.md + tools.yaml | Làm rõ điều kiện gọi tool và xác nhận để giảm nhầm response_type và gọi thừa nguồn đã hủy | 90% | 95% (19/20) | `starter_v0/runs/v2_B_base_openrouter_20261110T183941086642.json` |
 | v3 | system_prompt.md | Ưu tiên xác nhận đăng bài trước hỏi dữ liệu thiếu để sửa R12 | 95% | 90% (18/20) | `starter_v0/runs/v3_B_base_openrouter_20261110T184513703369.json` |
 
-Tất cả các run trên có measured_cases=total_cases=20 và provider_error_cases=0.
-Hash và artifact_version được giữ nguyên từ run trong `version_log.csv`.
-*File gọi là v1 nhưng metadata version/run_id/artifact_version vẫn ghi v0.
-Đây là lượt dùng prompt hash khác baseline, được đối chiếu như vòng tối ưu v1;
-cần giải trình nhãn sai hoặc chạy lại snapshot v1 với nhãn đúng, không sửa log cũ.
-V1 và v2 gồm nhiều quy tắc nên chưa cô lập được tác động của từng quy tắc riêng lẻ.
-V3 giảm 5 điểm phần trăm: R12 đã PASS, nhưng M02/M06 gọi thừa social_search.
-V2 là lượt có case_accuracy cao nhất trong bốn lượt, chưa chứng minh ổn định qua nhiều lần chạy.
-
-Sau v3 đã bổ sung điều kiện dùng/không dùng của timeline, fetch, format, policy,
-papers, paper_text và convention screenname không có @; đồng bộ 6 TOOL.md.
-Chi tiết: `starter_v0/artifacts/post_v3_tools_changes.md`.
-Cấu hình YAML hiện tại khác hash v3 và chưa chạy eval; bảng trên chỉ báo cáo các run lịch sử.
-
 ### B2. Failure Analysis
 
 Lấy từ `results[*].result.failures` trong run JSON.
@@ -93,13 +79,6 @@ Lấy từ `results[*].result.failures` trong run JSON.
 | R12_confirm_before_send | wrong_boundary (missing_tool_call) | send(text=Bản tin này) | Gọi gửi khi chưa xác nhận | V1/v2 hỏi text nên vẫn FAIL; v3 ưu tiên yes_no và đã PASS |
 | R13_parallel_web_and_tweets | wrong_tool theo case; observed=wrong_arg_value | lookup(query=AI news), social_search(query=AI) | Đã gọi đủ tool nhưng query lệch AI và thiếu topic=news | V1: tách chủ đề khỏi bộ lọc topic/timeframe; đã PASS ở v1–v3 |
 | R14_out_of_scope_coding | out_of_scope (unexpected_tool_call) | send | Dùng tool gửi cho yêu cầu viết code ngoài phạm vi | V1: trả lời phạm vi trong chat; đã PASS ở v1–v3 |
-
-Nguồn bảng B2: `starter_v0/runs/v0_B_base_openrouter_20261110T173810231309.json`.
-Failure Type giữ nhãn case từ log và bổ sung observed_mismatch để phân biệt lỗi tham số thực tế.
-
-Lỗi còn lại của v3: M02_carryover_timeframe (case failure_type=wrong_arg_value)
-và M06_switch_tool (wrong_tool), đều observed_mismatch=extra_tool_call với social_search.
-Nguồn: `starter_v0/runs/v3_B_base_openrouter_20261110T184513703369.json`.
 
 ### B3. Team Eval Cases
 
