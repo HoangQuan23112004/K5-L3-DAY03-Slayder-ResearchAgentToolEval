@@ -12,3 +12,6 @@ side_effect: local_file_write
 
 Downloads an arXiv PDF and extracts text locally with `pypdf`. Output is saved
 under `starter_v0/arxiv_papers/`.
+Use when an arXiv ID or abs/pdf URL is known and paper content is needed.
+Do not use for keyword discovery (`papers`), ordinary web pages (`fetch`), or
+non-arXiv PDFs. Use IDs from the user or search results; never invent them.

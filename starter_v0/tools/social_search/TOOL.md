@@ -11,3 +11,7 @@ side_effect: false
 # social_search
 
 Searches posts by keyword. `search_type` orders results (`Latest` or `Top`).
+Use `Latest` for recent posts and `Top` for popular posts. For posts by one known
+account, use `timeline`. If the latest user intent cancels Twitter or switches to
+web, stop calling this tool; retain the topic for `lookup` instead. Call both only
+when both sources remain requested.
