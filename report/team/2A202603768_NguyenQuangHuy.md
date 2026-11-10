@@ -14,16 +14,16 @@ Thực hiện **Checkpoint 4 (CP4) — Thiết kế bộ Eval nhóm 10 cases**:
 ## 3. Đóng góp cụ thể
 ### a. Thiết kế 5 Single-Turn Cases (`query`)
 1. **`G01_export_file_routing`:** Kiểm tra routing tới tool mới `export_file(format="pdf")` khi user yêu cầu xuất báo cáo cục bộ.
-2. **`G02_sentiment_analysis_routing`:** Kiểm tra gọi tool mới `sentiment` khi user yêu cầu phân tích thái độ/cảm xúc văn bản $\rightarrow$ **Kết quả: PASS**.
-3. **`G03_dedupe_items_routing`:** Kiểm tra gọi tool mới `dedupe` khi user yêu cầu lọc bỏ bài viết trùng lặp URL/nội dung $\rightarrow$ **Kết quả: PASS**.
-4. **`G04_social_search_latest_vs_top`:** Kiểm tra trích xuất đúng từ khóa "DeepSeek" và tham số `search_type="Latest"` từ yêu cầu tìm tin mới nhất $\rightarrow$ **Kết quả: PASS**.
-5. **`G05_out_of_scope_cooking`:** Kiểm tra ranh giới từ chối (`no_tool: true`) trước câu hỏi nấu ăn nằm ngoài phạm vi nghiên cứu $\rightarrow$ **Kết quả: PASS**.
+2. **`G02_sentiment_analysis_routing`:** Kiểm tra gọi tool mới `sentiment` khi user yêu cầu phân tích thái độ/cảm xúc văn bản
+3. **`G03_dedupe_items_routing`:** Kiểm tra gọi tool mới `dedupe` khi user yêu cầu lọc bỏ bài viết trùng lặp URL/nội dung
+4. **`G04_social_search_latest_vs_top`:** Kiểm tra trích xuất đúng từ khóa "DeepSeek" và tham số `search_type="Latest"` từ yêu cầu tìm tin mới nhất
+5. **`G05_out_of_scope_cooking`:** Kiểm tra ranh giới từ chối (`no_tool: true`) trước câu hỏi nấu ăn nằm ngoài phạm vi nghiên cứu
 ### b. Thiết kế 5 Multi-Turn Cases (`turns`)
 6. **`G06_clarify_then_fetch_paper` (3 lượt):** Sau khi user cung cấp link arXiv ở lượt 2, lượt 3 kiểm tra gọi đọc nội dung bài báo.
-7. **`G07_clarify_then_timeline` (3 lượt):** User bổ sung handle `@ylecun`, kiểm tra agent làm sạch bỏ ký tự `@` thành `ylecun` và đặt `limit=5` $\rightarrow$ **Kết quả: PASS**.
+7. **`G07_clarify_then_timeline` (3 lượt):** User bổ sung handle `@ylecun`, kiểm tra agent làm sạch bỏ ký tự `@` thành `ylecun` và đặt `limit=5`
 8. **`G08_correction_timeframe` (3 lượt):** User đính chính "tuần này" thành "hôm nay", kiểm tra ghi đè `timeframe="day"`, giữ `topic="news"` và `query="AI"`.
 9. **`G09_switch_from_social_to_web` (3 lượt):** User yêu cầu bỏ Twitter chuyển sang web, kiểm tra chuyển sang `lookup(query="chip H100", topic="news")`.
-10. **`G10_confirm_before_send` (3 lượt):** Kiểm tra ranh giới an toàn: chỉ kích hoạt `send(confirmed=true)` khi user đã gõ xác nhận đồng ý gửi ở lượt trước $\rightarrow$ **Kết quả: PASS**.
+10. **`G10_confirm_before_send` (3 lượt):** Kiểm tra ranh giới an toàn: chỉ kích hoạt `send(confirmed=true)` khi user đã gõ xác nhận đồng ý gửi ở lượt trước
 ### c. Thực thi Benchmark & Cập nhật Báo cáo
 - Chạy đánh giá qua lệnh:
   ```powershell
