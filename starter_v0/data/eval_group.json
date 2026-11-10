@@ -1,7 +1,284 @@
 {
   "dataset_id": "day03_v2_research_group",
   "dataset_role": "group",
-  "description": "Case do NHÓM tự viết thêm để cover thêm trường hợp. Mỗi case cần: id, phase='B', query HOẶC turns, failure_type (thuộc allowed_failure_types), và expect (tool_calls[...] hoặc no_tool=true). Nên kèm metadata.what_it_tests.",
-  "allowed_failure_types": ["wrong_tool", "wrong_arg_value", "wrong_boundary", "unnecessary_tool", "out_of_scope", "missing_info"],
-  "cases": []
+  "description": "Bộ 10 eval cases mở rộng do nhóm Slayder thiết kế: kiểm tra routing tool mới (export_file, sentiment, dedupe), chuẩn hóa tham số, từ chối câu ngoài phạm vi và ngữ cảnh đa lượt.",
+  "cases": [
+    {
+      "id": "G01_export_file_routing",
+      "phase": "B",
+      "suite": "group",
+      "query": "Hãy lưu nội dung tóm tắt nghiên cứu này ra file pdf tên là ai_report.pdf giúp tôi",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "export_file",
+            "args": {
+              "format": "pdf"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_new_tool_export_file",
+        "difficulty": "medium",
+        "what_it_tests": "Yêu cầu lưu file cục bộ -> gọi tool mới export_file với format=pdf, không nhầm sang send hay format."
+      }
+    },
+    {
+      "id": "G02_sentiment_analysis_routing",
+      "phase": "B",
+      "suite": "group",
+      "query": "Đánh giá giúp tôi thái độ phản hồi của người dùng trong đoạn này: 'Tính năng mới dùng rất tệ và thường xuyên bị lỗi'",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "sentiment",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_new_tool_sentiment",
+        "difficulty": "easy",
+        "what_it_tests": "Đánh giá cảm xúc văn bản -> gọi tool mới sentiment, không gọi web lookup hay social search."
+      }
+    },
+    {
+      "id": "G03_dedupe_items_routing",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tôi có danh sách các bài viết này, hãy lọc bỏ các bài viết bị trùng lặp URL và nội dung giúp tôi",
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "dedupe",
+            "args": {}
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "routing_new_tool_dedupe",
+        "difficulty": "medium",
+        "what_it_tests": "Lọc bỏ bài viết trùng lặp -> gọi tool mới dedupe."
+      }
+    },
+    {
+      "id": "G04_social_search_latest_vs_top",
+      "phase": "B",
+      "suite": "group",
+      "query": "Tìm những bài đăng mới nhất trên mạng xã hội về DeepSeek",
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "DeepSeek",
+              "search_type": "Latest"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "arg_search_type_latest",
+        "difficulty": "easy",
+        "what_it_tests": "'mới nhất' trên mạng xã hội -> search_type=Latest và trích đúng từ khóa DeepSeek."
+      }
+    },
+    {
+      "id": "G05_out_of_scope_cooking",
+      "phase": "B",
+      "suite": "group",
+      "query": "Hướng dẫn mình công thức nấu món phở bò truyền thống Hà Nội",
+      "failure_type": "out_of_scope",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "metadata": {
+        "skill": "out_of_scope_cooking",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu công thức nấu ăn ngoài phạm vi research -> KHÔNG gọi tool, từ chối định hướng về phạm vi."
+      }
+    },
+    {
+      "id": "G06_clarify_then_fetch_paper",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài báo nghiên cứu này giúp tôi với"
+        },
+        {
+          "role": "user",
+          "content": "https://arxiv.org/abs/2401.12345"
+        },
+        {
+          "role": "user",
+          "content": "Đúng link arxiv đó, đọc và tóm tắt nội dung chính nhé"
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://arxiv.org/abs/2401.12345"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: Sau khi user cung cấp URL bài báo, latest turn xác nhận gọi fetch đúng link."
+      }
+    },
+    {
+      "id": "G07_clarify_then_timeline",
+      "phase": "B",
+      "suite": "group",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Xem các bài đăng gần đây của người này trên Twitter"
+        },
+        {
+          "role": "user",
+          "content": "Tài khoản của Yann LeCun, handle là @ylecun"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 5 bài đăng mới nhất"
+        }
+      ],
+      "failure_type": "missing_info",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "ylecun",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_clarify_handle_cleaning",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: User đưa @ylecun -> loại bỏ ký tự @ thành ylecun và limit=5."
+      }
+    },
+    {
+      "id": "G08_correction_timeframe",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Tìm kiếm tin tức AI mới trong tuần này"
+        },
+        {
+          "role": "user",
+          "content": "À không, chỉ lấy tin tức nóng trong ngày hôm nay thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn tìm về chủ đề AI nhé"
+        }
+      ],
+      "failure_type": "wrong_arg_value",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_correction_timeframe",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: Sửa 'tuần này' thành 'hôm nay' -> ghi đè timeframe=day, giữ topic=news và query=AI."
+      }
+    },
+    {
+      "id": "G09_switch_from_social_to_web",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về chip H100 trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Đừng tìm Twitter nữa, chuyển sang tìm tin tức trên web đi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn là chủ đề chip H100"
+        }
+      ],
+      "failure_type": "wrong_tool",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "chip H100",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_switch_tool_cancel_twitter",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: Bỏ Twitter, chuyển sang lookup news, giữ query chip H100."
+      }
+    },
+    {
+      "id": "G10_confirm_before_send",
+      "phase": "B",
+      "turns": [
+        {
+          "role": "user",
+          "content": "Gửi bản tin AI sáng nay lên kênh Telegram cho nhóm"
+        },
+        {
+          "role": "user",
+          "content": "Tôi đã đọc lại nội dung và xác nhận đồng ý gửi lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Xác nhận gửi ngay bây giờ nhé"
+        }
+      ],
+      "failure_type": "wrong_boundary",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "metadata": {
+        "skill": "multiturn_confirm_send",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: Sau khi user xác nhận đồng ý gửi -> gọi send với confirmed=true."
+      }
+    }
+  ]
 }
