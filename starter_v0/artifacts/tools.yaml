@@ -77,6 +77,49 @@ tools:
         headline: {type: string, default: "", description: "Tiêu đề"}
       required: [items, template]
 
+  - name: dedupe
+    description: "Loại item trùng nhau theo URL sau khi bỏ tham số theo dõi hoặc theo nội dung gần giống từ kết quả lookup/social_search. Chỉ dùng trên items đã có từ tool; không tìm tin mới hoặc tự tạo items. Nếu đầu vào có trường error, trả lại lỗi thay vì đoán kết quả."
+    parameters:
+      type: object
+      properties:
+        items:
+          type: array
+          default: []
+          description: "Items thật từ tool trước (title, text, summary, content, url...); không tự tạo."
+          items: {type: object}
+        threshold: {type: number, default: 0.8, minimum: 0, maximum: 1, description: "Ngưỡng giống nhau từ 0 đến 1; giảm xuống 0.6-0.7 để gộp cả bài viết lại."}
+      required: [items]
+
+  - name: sentiment
+    description: "Đánh giá thái độ tích cực, tiêu cực hoặc trung tính của văn bản tiếng Anh hoặc tiếng Việt bằng từ điển; kết quả chỉ mang tính tham khảo. Dùng với văn bản của user hoặc items có sẵn từ lookup/social_search; không tự tìm dữ liệu. Nếu đầu vào có trường error, trả lại lỗi thay vì đoán."
+    parameters:
+      type: object
+      properties:
+        text: {type: string, default: "", description: "Văn bản cần đánh giá, từ user hoặc tool. Bỏ qua nếu đã truyền items."}
+        items:
+          type: array
+          default: []
+          description: "Items thật từ tool trước (title, text/content/summary); không tự tạo."
+          items: {type: object}
+        lexicon_extra:
+          type: object
+          default: {}
+          description: "Bổ sung từ theo lĩnh vực, giá trị -5..5. Ví dụ {\"bullish\": 2, \"bearish\": -2}."
+          additionalProperties: {type: number}
+      required: []
+
+  - name: export_file
+    description: "Lưu nội dung đã có ra file cục bộ dạng PDF, HTML hoặc JSON và trả về đường dẫn file. Chỉ dùng khi user yêu cầu lưu/xuất file; không gửi hay đăng ra ngoài. Không tự bịa nội dung: nếu chưa có thì gọi tool truy xuất hoặc clarify trước. Nếu đầu vào có trường error thì trả lại lỗi, không nói là đã lưu."
+    parameters:
+      type: object
+      properties:
+        content: {type: string, default: "", description: "Nội dung đã có từ user hoặc tool (thường là kết quả của format). Với json có thể là chuỗi JSON của danh sách item."}
+        filename: {type: string, default: "digest", description: "Tên file, không gồm thư mục; đuôi file được tự thêm theo format."}
+        format: {type: string, enum: [pdf, html, json], default: "json", description: "pdf để đọc/in; html để xem trong trình duyệt; json để xử lý tiếp bằng chương trình."}
+        title: {type: string, default: "", description: "Tiêu đề in ở đầu PDF; bỏ qua với json."}
+      required: [content]
+
+
   # ---------------- Bonus tools ----------------
   - name: send
     description: "Gửi nội dung đã được user xác nhận rõ lên kênh Telegram được cấu hình. Chỉ gọi khi có nội dung chính xác và xác nhận bản cuối; yêu cầu đăng ban đầu chưa phải xác nhận. Nếu chưa xác nhận, dùng clarify(response_type=yes_no). Không dùng tool này để trả lời trong chat hoặc giải bài ngoài phạm vi."
