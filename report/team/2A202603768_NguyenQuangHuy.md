@@ -66,9 +66,13 @@
 - Hoàn thiện bảng dữ liệu **B3. Team Eval Cases** trong `report/team/group_report.md`.
 
 ## 4. Bằng chứng
+- **File kỹ thuật và Artifacts:**
   - `starter_v0/data/eval_group.json`: File định nghĩa 10 test case mở rộng của nhóm.
   - `starter_v0/runs/`: File run log ghi nhận kết quả thực thi suite `group`.
   - `report/team/group_report.md`: Bảng B3 đã được điền đầy đủ thông tin 10 case.
+- **Công cụ AI đã sử dụng & Cách tự kiểm tra:**
+  - Sử dụng trợ lý Antigravity để hỗ trợ định dạng JSON schema và tư vấn các tình huống edge cases trong tương tác đa lượt.
+  - Tự kiểm tra bằng công cụ tự động: Chạy trực tiếp qua `run_eval.py` với tham số `--suite group` để hệ thống tự validate schema, tính nhất quán của tool name và tham số với `tools.yaml`.
 
 ## 5. Tự đánh giá
 
