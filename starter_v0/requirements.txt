@@ -10,3 +10,6 @@ pypdf>=4.0.0
 reportlab>=4.0
 # Tool unit tests:
 pytest>=8.0.0
+
+# Live chat UI:
+streamlit>=1.40.0

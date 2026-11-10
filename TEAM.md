@@ -14,7 +14,7 @@
 |   1 |  Hoàng Dương Anh Quân      |   2A202603735   |   26ai.quanhda@vinuni.edu.vn    |        |         |
 |   2 |  Nguyễn Quang Huy      |   2A202603768   |   26ai.huynq13@vinuni.edu.vn    |   nguyenquanghuy091204     |    Thực hiện Checkpoint 4 (CP4) - Thiết kế bộ Eval nhóm 10 cases     |
 |   3 |  Đào Nguyễn Quang Thành      |  2A202603754    | 26ai.thanhdnq@vinuni.edu.vn      | DaoThanh11       | Phụ trách lập tool mới, viết test case tương ứng với tool mới        |
-|   4 |        |      |       |        |         |
+|   4 | Lã Thái Minh       | 2A202603756      | 26ai.minhlt4@vinuni.edu.vn      |  minh17023      | Thực hiện Checkpoint 5 (CP5) - UI, demo và báo cáo |
 ## Cá nhân
 
 Mỗi thành viên đồng thời tạo một báo cáo riêng trong `report/` theo dạng:
@@ -63,3 +63,23 @@ Sao chép mục dưới đây cho từng thành viên.
 - File run log thực nghiệm: `starter_v0/runs/v3_B_group_openrouter_20261110T233153105151.json`
 - Báo cáo nhóm: Bảng B3 trong `report/team/group_report.md`
 - Báo cáo cá nhân: `report/team/2A202603768_NguyenQuangHuy.md`
+
+## Lã Thái Minh-2A202603756
+
+### Phần việc phụ trách
+
+- Thực hiện Checkpoint 5 (CP5): làm UI demo Research Agent, chuẩn bị Phần A của báo cáo nhóm và tạo transcript hội thoại thử nghiệm.
+
+### Đóng góp cụ thể
+
+- Tạo giao diện Streamlit trong [app.py](starter_v0/app.py), dùng vòng gọi agent và cách lưu transcript từ [chat.py](starter_v0/chat.py).
+- Bổ sung dependency Streamlit vào [requirements.txt](starter_v0/requirements.txt).
+- Viết Phần A trong [group_report.md](report/team/group_report.md): giới thiệu agent, các tool, lệnh chạy UI và câu hỏi mẫu.
+- Thử hội thoại qua UI và lưu transcript nhiều lượt.
+
+### Bằng chứng
+
+- Mã UI: [app.py](starter_v0/app.py), [requirements.txt](starter_v0/requirements.txt).
+- Báo cáo nhóm: Phần A trong [group_report.md](report/team/group_report.md).
+- Transcript 4 lượt: [v3_openrouter_20261111T011751683948.transcript.json](starter_v0/transcripts/v3_openrouter_20261111T011751683948.transcript.json).
+- Báo cáo cá nhân: [2A202603756_LaThaiMinh.md](report/team/2A202603756_LaThaiMinh.md).

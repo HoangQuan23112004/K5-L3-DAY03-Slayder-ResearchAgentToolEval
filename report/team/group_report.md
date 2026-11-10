@@ -16,37 +16,46 @@
 
 ### A1. Agent này làm được gì
 
-> 1–2 câu mô tả agent dùng để làm gì (cho team khác hiểu nhanh).
-
-Ví dụ: "Research agent: tìm tin theo từ khóa / theo tài khoản, đọc URL, tổng hợp thành digest, và gửi lên Telegram khi được xác nhận."
+Slayder Research Agent hỗ trợ tìm tin web, bài đăng X/Twitter, paper arXiv và quy định nghiên cứu nội bộ; có thể đọc URL hoặc nội dung paper, loại mục trùng, phân tích sắc thái và xuất nội dung ra file. Agent hỏi lại khi thiếu thông tin và cần xác nhận nội dung cuối trước khi gửi lên Telegram.
 
 **Cách chạy UI:**
 
-> Lệnh chạy UI (ví dụ `streamlit run app.py`) và dependency đã thêm vào `starter_v0/requirements.txt`.
+Từ `starter_v0/`, cài dependency bằng `python -m pip install -r requirements.txt`, cấu hình `.env` theo [TOOL-SETUP.md](../../docs/TOOL-SETUP.md), rồi chạy `streamlit run app.py`. Mở `http://localhost:8501` trên máy chạy UI. UI dùng cùng vòng chat và định dạng transcript với `chat.py`; mỗi phiên lưu vào `starter_v0/transcripts/*.transcript.json`.
 
 **Link dùng thử (deploy):**
 
 > Dán link public để team khác mở thử ngay. Cách deploy nhanh bằng Cloudflare Tunnel xem README. Nếu deploy Vercel/Streamlit Cloud thì dán link đó.
 >
-> URL:
+> URL: https://spoke-dod-vsnet-forget.trycloudflare.com/
+
 
 ### A2. Tool agent có
 
-> Liệt kê các tool agent đang dùng (gồm tool mới nhóm tự thêm). Mỗi tool 1 dòng: tên + làm được gì.
+Danh sách dưới đây khớp các tool đang được đăng ký trong `starter_v0/tools/__init__.py` và khai báo trong `starter_v0/artifacts/tools.yaml`.
 
 | Tên tool | Làm được gì | Tool mới nhóm thêm? |
 |---|---|---|
-| clarify | hỏi lại người dùng khi thiếu thông tin | không |
-|  |  |  |
-|  |  |  |
+| clarify | Hỏi lại khi thiếu thông tin hoặc cần xác nhận | không |
+| timeline | Lấy bài đăng gần đây của một tài khoản X/Twitter | không |
+| social_search | Tìm bài đăng X/Twitter về một chủ đề | không |
+| lookup | Tìm thông tin và tin tức trên web | không |
+| fetch | Đọc nội dung từ URL cụ thể | không |
+| format | Định dạng dữ liệu đã có thành bản tin hoặc danh sách | không |
+| send | Gửi nội dung đã được xác nhận lên Telegram | không |
+| policy | Tra cứu tài liệu chính sách nghiên cứu nội bộ | không |
+| papers | Tìm paper trên arXiv | không |
+| paper_text | Đọc text từ paper arXiv đã xác định | không |
+| dedupe | Loại các mục trùng URL hoặc nội dung tương tự | có |
+| sentiment | Phân tích sắc thái tích cực, tiêu cực hoặc trung tính của văn bản | có |
+| export_file | Xuất nội dung đã thu thập thành file PDF, HTML hoặc JSON cục bộ | có |
 
 ### A3. Câu hỏi mẫu để thử
 
-> 3–5 câu hỏi/yêu cầu mẫu để team khác tự thử agent ngay.
-
-1.
-2.
-3.
+1. Tin tức AI hôm nay có gì nổi bật?
+2. Lấy 5 bài đăng mới nhất của Sam Altman trên X.
+3. Tìm paper về đánh giá research agent trên arXiv.
+4. Tóm tắt bài viết này giúp mình. (Kiểm tra agent có hỏi URL còn thiếu.)
+5. Gửi bản tin này lên Telegram. (Kiểm tra agent có hỏi xác nhận trước khi gửi.)
 
 ## 3. Giải pháp
 
@@ -99,11 +108,16 @@ Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn
 
 ### B4. Live Chat Evidence
 
-Lấy từ `starter_v0/transcripts/*.transcript.json`.
+Lấy từ transcript live [v3_openrouter_20261111T011751683948.transcript.json](../../starter_v0/transcripts/v3_openrouter_20261111T011751683948.transcript.json), chạy qua UI với OpenRouter / `openai/gpt-4o-mini`. Cả bốn lượt dùng artifact `v3+pd6e61a2fbd95+tb959bf7a2303`.
 
 | Turn | User Request | Tool Calls | Version Evidence | Outcome |
 |---|---|---|---|---|
-|  |  |  |  |  |
+| 1 | “Tóm tắt bài viết này giúp mình.” | Không gọi tool | `v3+pd6e61a2fbd95+tb959bf7a2303` | `answered`: agent hỏi người dùng cung cấp URL. |
+| 2 | Cung cấp `https://openai.com/research/` và yêu cầu tóm tắt | `fetch(url="https://openai.com/research/")` | Cùng artifact lượt 1 | `answered`: đọc URL và trả lời. |
+| 3 | “Tin tức AI hôm nay có gì nổi bật?” | `lookup(query="AI", topic="news", timeframe="day", max_results=5)` | Cùng artifact lượt 1 | `answered`: trả tin từ kết quả tìm web. |
+| 4 | “Hãy gửi bản tin AI vừa tìm lên Telegram.” | `clarify(response_type="yes_no")` | Cùng artifact lượt 1 | `waiting_for_user`: hỏi xác nhận; transcript không có lệnh `send`. |
+
+Các transcript khác có nhãn v0–v3 nhưng dùng cùng hash prompt và tool hiện tại. Chúng không thay thế run JSON ở B1 để so sánh hiệu quả giữa các phiên bản.
 
 ### B5a. Required Evidence — Tool mới, unit test, UI
 
@@ -111,7 +125,7 @@ Lấy từ `starter_v0/transcripts/*.transcript.json`.
 |---|---|---|---|
 | Tool mới (`tools/<tên>/`) |  |  |  |
 | Unit test tool mới (≥ 3 test/tool) | `pytest` output (0 failed) |  |  |
-| UI (lệnh chạy + link dùng thử) |  |  |  |
+| UI (lệnh chạy + link dùng thử) | [app.py](../../starter_v0/app.py), [requirements.txt](../../starter_v0/requirements.txt), lệnh và link ở A1, [transcript 4 lượt](../../starter_v0/transcripts/v3_openrouter_20261111T011751683948.transcript.json) | UI mở được trên máy và qua link tunnel; ghi transcript có lượt hỏi URL, bổ sung URL, tìm tin và xin xác nhận gửi. | Link tunnel tạm thời; UI hiển thị `provider_error` khi lỗi provider và không nhập API key vào chat. |
 
 Tool unit tests: số test đã viết, và một ví dụ lỗi mà unit test bắt được nhưng eval không bắt được.
 
