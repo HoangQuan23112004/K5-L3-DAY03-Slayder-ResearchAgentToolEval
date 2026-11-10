@@ -85,8 +85,17 @@ Lấy từ `results[*].result.failures` trong run JSON.
 Liệt kê đúng 10 case trong `starter_v0/data/eval_group.json` (5 single turn + 5 multi turn).
 
 | Case ID | What It Tests | Expected Tool/Behavior | Result |
-|---|---|---|---|
-|  |  |  |  |
+|---|---|---|:---:|
+| **G01_export_file_routing** | Yêu cầu lưu tệp báo cáo cục bộ → gọi tool mới `export_file(format="pdf")`, không nhầm sang `send` hay `format`. | `export_file(format="pdf")` | **FAIL**: Model nhận thấy chưa có nội dung văn bản cụ thể nên gọi `clarify` để hỏi nội dung trước khi export. |
+| **G02_sentiment_analysis_routing** | Đánh giá thái độ/cảm xúc văn bản → gọi tool mới `sentiment`, không gọi tool tìm kiếm web hay mạng xã hội. | `sentiment()` | **PASS**: Model nhận diện chính xác intent phân tích cảm xúc và truyền đúng đoạn text phản hồi vào `sentiment`. |
+| **G03_dedupe_items_routing** | Yêu cầu lọc bỏ các bài viết bị trùng lặp URL và nội dung → gọi tool mới `dedupe`. | `dedupe()` | **PASS**: Model tự động gọi đúng tool `dedupe` để xử lý danh sách item. |
+| **G04_social_search_latest_vs_top** | Yêu cầu tìm tin "mới nhất" trên mạng xã hội → truyền `search_type="Latest"` và trích đúng từ khóa "DeepSeek". | `social_search(query="DeepSeek", search_type="Latest")` | **PASS**: Model trích xuất chuẩn xác query và map từ khóa "mới nhất" sang `search_type="Latest"` (không bị nhầm `Top`). |
+| **G05_out_of_scope_cooking** | Yêu cầu công thức nấu ăn ngoài phạm vi nghiên cứu → KHÔNG gọi tool (`no_tool`), giải thích phạm vi trong chat. | `no_tool: true` | **PASS**: Model từ chối lịch sự và trả lời trực tiếp mà không gọi bất kỳ tool nào. |
+| **G06_clarify_then_fetch_paper** | Hội thoại 3 lượt: Sau khi user cung cấp URL bài báo nghiên cứu → lượt cuối gọi đọc trang theo URL. | `fetch(url="https://arxiv.org/abs/2401.12345")` | **FAIL**: Model phát hiện link arXiv nên thông minh chọn gọi tool chuyên dụng `paper_text` thay vì tool tổng quát `fetch`. |
+| **G07_clarify_then_timeline** | Hội thoại 3 lượt: User cung cấp `@ylecun` → agent chuẩn hóa bỏ ký tự `@` thành `ylecun` và lấy `limit=5`. | `timeline(screenname="ylecun", limit=5)` | **PASS**: Model kế thừa đầy đủ ngữ cảnh qua 3 lượt, tự động làm sạch ký tự `@` và đặt đúng `limit=5`. |
+| **G08_correction_timeframe** | Hội thoại 3 lượt: User đính chính "tuần này" thành "hôm nay" → ghi đè `timeframe="day"`, giữ `topic="news"` và `query="AI"`. | `lookup(query="AI", topic="news", timeframe="day")` | **FAIL**: Model đã cập nhật đúng `timeframe="day"` cho `lookup`, nhưng gọi thêm cả `social_search` do nghĩ user muốn cả 2 nguồn. |
+| **G09_switch_from_social_to_web** | Hội thoại 3 lượt: User yêu cầu bỏ Twitter chuyển sang web → chỉ gọi `lookup(query="chip H100", topic="news")`. | `lookup(query="chip H100", topic="news")` | **FAIL**: Model đã gọi `lookup(topic="news")` nhưng vẫn gọi kèm `social_search` (chưa triệt để ngắt hẳn nguồn Twitter cũ). |
+| **G10_confirm_before_send** | Hội thoại 3 lượt: Sau khi user đã gõ xác nhận đồng ý gửi rõ ràng → kích hoạt `send(confirmed=true)`. | `send(confirmed=true)` | **PASS**: Model tuân thủ đúng ranh giới an toàn: khi đã có xác nhận rõ ràng ở lượt 2, lượt 3 kích hoạt `send(confirmed=true)`. |
 
 ### B4. Live Chat Evidence
 
