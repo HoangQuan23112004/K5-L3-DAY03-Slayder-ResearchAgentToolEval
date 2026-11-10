@@ -13,7 +13,7 @@
 | --: | ------ | ---- | ----- | ------ | ------- |
 |   1 |  Hoàng Dương Anh Quân      |   2A202603735   |   26ai.quanhda@vinuni.edu.vn    |        |         |
 |   2 |  Nguyễn Quang Huy      |      |       |        |         |
-|   3 |        |      |       |        |         |
+|   3 |  Đào Nguyễn Quang Thành      |  2A202603754    | 26ai.thanhdnq@vinuni.edu.vn      | DaoThanh11       | Phụ trách lập tool mới, viết test case tương ứng với tool mới        |
 |   4 |        |      |       |        |         |
 ## Cá nhân
 
