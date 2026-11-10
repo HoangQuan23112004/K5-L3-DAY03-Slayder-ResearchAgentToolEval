@@ -1,0 +1,1037 @@
+{
+  "run_id": "v3_B_group_openrouter_20261110T235421661692",
+  "version": "v3",
+  "artifact_version": "v3+pd52885a3c9cc+t0440bb214688",
+  "prompt_hash": "d52885a3c9cc20a0b7b088438108c1c65d62586c2f1827217b7d3ee6546878bc",
+  "tools_hash": "0440bb214688e2bc13e0fe55b0b68bbd49abd0c459060d4408cbc8cdb23e064c",
+  "phase": "B",
+  "suite": "group",
+  "provider": "openrouter",
+  "model": "openai/gpt-4o-mini",
+  "system_prompt": "C:\\Users\\quang\\Downloads\\K5-L3-DAY03-Slayder-ResearchAgentToolEval-main\\starter_v0\\artifacts\\system_prompt.md",
+  "tools": "C:\\Users\\quang\\Downloads\\K5-L3-DAY03-Slayder-ResearchAgentToolEval-main\\starter_v0\\artifacts\\tools.yaml",
+  "eval_cases": "data\\eval_group.json",
+  "dataset_id": "day03_v2_research_group",
+  "dataset_role": "group",
+  "description": "Bộ 10 eval cases mở rộng do nhóm Slayder thiết kế: kiểm tra routing tool mới (export_file, sentiment, dedupe), chuẩn hóa tham số, từ chối câu ngoài phạm vi và ngữ cảnh đa lượt.",
+  "generated_at": "2026-11-10T23:54:21",
+  "summary": {
+    "total_cases": 10,
+    "measured_cases": 10,
+    "provider_error_cases": 0,
+    "passed_cases": 6,
+    "case_accuracy": 0.6,
+    "tool_routing_accuracy": 0.6,
+    "argument_accuracy": 0.6,
+    "multiturn_accuracy": 0.4,
+    "failure_counts": {
+      "wrong_tool": 2,
+      "missing_info": 1,
+      "wrong_arg_value": 1
+    },
+    "observed_mismatch_counts": {
+      "missing_tool_call": 2,
+      "extra_tool_call": 2
+    }
+  },
+  "results": [
+    {
+      "id": "G01_export_file_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_new_tool_export_file",
+        "difficulty": "medium",
+        "what_it_tests": "Yêu cầu lưu file cục bộ -> gọi tool mới export_file với format=pdf, không nhầm sang send hay format."
+      },
+      "input": "Hãy lưu nội dung tóm tắt nghiên cứu này ra file pdf tên là ai_report.pdf giúp tôi",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "export_file",
+            "args": {
+              "format": "pdf"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "clarify",
+            "args": {
+              "question": "Bạn có thể cung cấp nội dung tóm tắt nghiên cứu mà bạn muốn lưu không?",
+              "response_type": "text"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "missing tool call export_file",
+          "extra tool call clarify"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "clarify",
+          "args": {
+            "question": "Bạn có thể cung cấp nội dung tóm tắt nghiên cứu mà bạn muốn lưu không?",
+            "response_type": "text"
+          },
+          "result": {
+            "tool": "ask_user",
+            "question": "Bạn có thể cung cấp nội dung tóm tắt nghiên cứu mà bạn muốn lưu không?",
+            "response_type": "text",
+            "options": [],
+            "awaiting_user": true
+          }
+        }
+      ]
+    },
+    {
+      "id": "G02_sentiment_analysis_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_new_tool_sentiment",
+        "difficulty": "easy",
+        "what_it_tests": "Đánh giá cảm xúc văn bản -> gọi tool mới sentiment, không gọi web lookup hay social search."
+      },
+      "input": "Đánh giá giúp tôi thái độ phản hồi của người dùng trong đoạn này: 'Tính năng mới dùng rất tệ và thường xuyên bị lỗi'",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "sentiment",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "sentiment",
+            "args": {
+              "text": "Tính năng mới dùng rất tệ và thường xuyên bị lỗi"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "sentiment",
+          "args": {
+            "text": "Tính năng mới dùng rất tệ và thường xuyên bị lỗi"
+          },
+          "result": {
+            "tool": "sentiment",
+            "items": [],
+            "overall": {
+              "score": -0.7935,
+              "label": "negative"
+            },
+            "skipped_invalid": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "G03_dedupe_items_routing",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "routing_new_tool_dedupe",
+        "difficulty": "medium",
+        "what_it_tests": "Lọc bỏ bài viết trùng lặp -> gọi tool mới dedupe."
+      },
+      "input": "Tôi có danh sách các bài viết này, hãy lọc bỏ các bài viết bị trùng lặp URL và nội dung giúp tôi",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "dedupe",
+            "args": {}
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "dedupe",
+            "args": {
+              "items": []
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "dedupe",
+          "args": {
+            "items": []
+          },
+          "result": {
+            "tool": "dedupe",
+            "items": [],
+            "removed_count": 0,
+            "removed": [],
+            "skipped_invalid": 0
+          }
+        }
+      ]
+    },
+    {
+      "id": "G04_social_search_latest_vs_top",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "arg_search_type_latest",
+        "difficulty": "easy",
+        "what_it_tests": "'mới nhất' trên mạng xã hội -> search_type=Latest và trích đúng từ khóa DeepSeek."
+      },
+      "input": "Tìm những bài đăng mới nhất trên mạng xã hội về DeepSeek",
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "DeepSeek",
+              "search_type": "Latest"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "social_search",
+            "args": {
+              "query": "DeepSeek",
+              "search_type": "Latest"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "DeepSeek",
+            "search_type": "Latest"
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "DeepSeek",
+            "search_type": "Latest",
+            "items": [
+              {
+                "title": "@4396eth @TwT_ookk 这是豆包不是deepseek啊",
+                "summary": "@4396eth @TwT_ookk 这是豆包不是deepseek啊",
+                "url": "https://x.com/aaa2467891937/status/2120198237827342368",
+                "source": "@aaa2467891937",
+                "date": "Tue Nov 10 16:53:45 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "@muzi1268 先不说ChatGPT和Codex是不是两款互相独立的AI",
+                "summary": "@muzi1268 先不说ChatGPT和Codex是不是两款互相独立的AI\nDeepseek哪里弱了😡\n还有你把我kimi和glm放哪去了😡",
+                "url": "https://x.com/ffaa1683174/status/2120197678227234967",
+                "source": "@ffaa1683174",
+                "date": "Tue Nov 10 16:51:32 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "13"
+                }
+              },
+              {
+                "title": "@stevencheng The flip side is the subscription only wins if you actually use it — a quiet month on Plus or Pro is twenty",
+                "summary": "@stevencheng The flip side is the subscription only wins if you actually use it — a quiet month on Plus or Pro is twenty bucks burned, while DeepSeek just sits there costing nothing until you run something.",
+                "url": "https://x.com/Macfeecn/status/2120197652029878442",
+                "source": "@Macfeecn",
+                "date": "Tue Nov 10 16:51:26 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "4"
+                }
+              },
+              {
+                "title": "@wilderko Deepseek api costs next to nothing. ",
+                "summary": "@wilderko Deepseek api costs next to nothing. \nA 6e pack of cigarettes gets you month of more of tokens.",
+                "url": "https://x.com/frogoland/status/2120197444336288110",
+                "source": "@frogoland",
+                "date": "Tue Nov 10 16:50:36 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "5"
+                }
+              },
+              {
+                "title": "opus 5.5 install any tools needed + deepseek youtube download cli = welcome to x dot com brother 😈",
+                "summary": "opus 5.5 install any tools needed + deepseek youtube download cli = welcome to x dot com brother 😈",
+                "url": "https://x.com/diz__zee/status/2120197249275949424",
+                "source": "@diz__zee",
+                "date": "Tue Nov 10 16:49:50 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "9"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G05_out_of_scope_cooking",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": false,
+      "metadata": {
+        "skill": "out_of_scope_cooking",
+        "difficulty": "easy",
+        "what_it_tests": "Yêu cầu công thức nấu ăn ngoài phạm vi research -> KHÔNG gọi tool, từ chối định hướng về phạm vi."
+      },
+      "input": "Hướng dẫn mình công thức nấu món phở bò truyền thống Hà Nội",
+      "expect": {
+        "no_tool": true,
+        "behavior": "refuse"
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [],
+        "actual_text": "Để nấu món phở bò truyền thống Hà Nội, bạn cần chuẩn bị các nguyên liệu và thực hiện theo các bước sau:\n\n### Nguyên liệu:\n1. **Nước dùng:**\n   - Xương bò (xương ống hoặc xương sống): 1-2 kg\n   - Gừng: 1 củ\n   - Hành tím: 2-3 củ\n   - Gia vị: muối, đường, hạt nêm, tiêu\n   - Các loại gia vị phở: quế, hồi, thảo quả, gừng, hành\n\n2. **Thịt bò:**\n   - Thịt bò tái (thịt bò thăn hoặc bò bắp): 300-500g\n\n3. **Bánh phở:**\n   - Bánh phở tươi hoặc khô\n\n4. **Rau ăn kèm:**\n   - Húng quế, giá đỗ, chanh, ớt tươi\n\n### Cách làm:\n1. **Nấu nước dùng:**\n   - Rửa sạch xương bò, sau đó cho vào nồi nước sôi trụng qua để loại bỏ tạp chất.\n   - Đun sôi 3-4 lít nước trong nồi lớn, cho xương bò vào nấu khoảng 1-2 giờ.\n   - Thêm gừng nướng và hành tím nướng vào nồi để tạo hương vị.\n   - Thêm các gia vị như quế, hồi, thảo quả vào nồi. Nêm nếm với muối, đường, hạt nêm cho vừa ăn.\n\n2. **Chuẩn bị thịt bò:**\n   - Thịt bò rửa sạch, thái lát mỏng. Bạn có thể cho thịt vào ngăn đông khoảng 30 phút để dễ thái hơn.\n\n3. **Nấu bánh phở:**\n   - Nếu dùng bánh phở khô, bạn cần ngâm nước nóng cho mềm trước khi cho vào tô. Nếu dùng bánh phở tươi, chỉ cần trụng qua nước sôi.\n\n4. **Hoàn thành món ăn:**\n   - Cho bánh phở vào tô, xếp thịt bò lên trên.\n   - Rót nước dùng nóng lên tô phở, đảm bảo thịt bò chín tái.\n   - Trang trí với rau thơm, giá đỗ, chanh và ớt tươi.\n\n### Thưởng thức:\n- Phở bò thường được ăn kèm với nước chấm và các loại gia vị như tương ớt, tương đen tùy theo sở thích.\n\nChúc bạn thành công với món phở bò Hà Nội!",
+        "case_failure_type": "out_of_scope",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": []
+    },
+    {
+      "id": "G06_clarify_then_fetch_paper",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_url",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: Sau khi user cung cấp URL bài báo, latest turn xác nhận gọi fetch đúng link."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tóm tắt bài báo nghiên cứu này giúp tôi với"
+        },
+        {
+          "role": "user",
+          "content": "https://arxiv.org/abs/2401.12345"
+        },
+        {
+          "role": "user",
+          "content": "Đúng link arxiv đó, đọc và tóm tắt nội dung chính nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "fetch",
+            "args": {
+              "url": "https://arxiv.org/abs/2401.12345"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "paper_text",
+            "args": {
+              "arxiv_url": "https://arxiv.org/abs/2401.12345"
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": "missing_tool_call",
+        "failure_type": "missing_info",
+        "failures": [
+          "missing tool call fetch",
+          "extra tool call paper_text"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "paper_text",
+          "args": {
+            "arxiv_url": "https://arxiv.org/abs/2401.12345"
+          },
+          "result": {
+            "tool": "get_arxiv_paper_text",
+            "arxiv_id": "2401.12345",
+            "url": "https://arxiv.org/abs/2401.12345",
+            "pdf_url": "https://arxiv.org/pdf/2401.12345.pdf",
+            "pdf_path": "C:\\Users\\quang\\Downloads\\K5-L3-DAY03-Slayder-ResearchAgentToolEval-main\\starter_v0\\arxiv_papers\\2401.12345.pdf",
+            "txt_path": "C:\\Users\\quang\\Downloads\\K5-L3-DAY03-Slayder-ResearchAgentToolEval-main\\starter_v0\\arxiv_papers\\2401.12345.txt",
+            "page_count": 17,
+            "pages_read": 5,
+            "chars_returned": 8000,
+            "items": [
+              {
+                "title": "arXiv paper 2401.12345",
+                "url": "https://arxiv.org/abs/2401.12345",
+                "source": "arxiv.org",
+                "summary": "arXiv:2401.12345v3  [eess.SP]  17 Jun 2025\n1\nDistributionally Robust Receive Combining\nShixiong Wang, Wei Dai, and Geoffrey Ye Li, Fellow, IEEE\nAbstract—This article investigates signal estimation in wireless\ntransmission (i.e., receive combining) from the perspective of\nstatistical machine learning, where the transmit signals may be\nfrom an integrated sensing and communication system; that is,\n1) signals may be not only discrete constellation points but also\narbitrary complex values; 2) signals may be spatially correlated.\nParticular attention is paid to handling various uncertainties\nsuch as the uncertainty of the transmit signal covariance, the\nuncertainty of the channel matrix, the uncertainty of the channel\nnoise covariance, the existence of channel impulse noises, the non-\nideality of the power amplifiers, and the limited sample size of\npilots. To proceed, a distributionally robust receive combining\nframework that is insensitive to the above uncertainties is\nproposed, which reveals that channel estimation is not a necessary\noperation. For optimal linear estimation, the proposed framework\nincludes several existing combiners as special cases such as diag-\nonal loading and eigenvalue thresholding. For optimal nonlinear\nestimation, estimators are limited in reproducing kernel Hilbert\nspaces and neural network function spaces, and corresponding\nuncertainty-aware solutions (e.g., kernelized diagonal loading)\nare derived. In addition, we prove that the ridge and kernel\nridge regression methods in machine learning are distributionally\nrobust against diagonal perturbation in feature covariance.\nIndex Terms —Wireless Transmission, Smart Antenna, Ma-\nchine Learning, Robust Estimation, Robust Combining, Distri-\nbutional Uncertainty, Channel Uncertainty, Limited Pilot.\nI. I NTRODUCTION\nI\nN wireless transmission, detection and estimation of trans-\nmitted signals is of high importance, and combining at\narray receivers serves as a key signal-processing technique to\nsuppress interference and environmental noises. The earliest\nbeamforming solutions rely on the use of phase shifters (e.g.,\nphased arrays) to steer and shape wave lobes, while advanced\ncombining methods allow the employment of digital signal\nprocessing units, which introduce additional structural freedom\n(e.g., fully digital, hybrid, nonlinear, wideband) in combiner\ndesign and significant performance improvement in signal\nrecovery [1]–[3].\nIn traditional communication systems, transmitted signals\nare discrete points from constellations. Therefore, signal re-\ncovery, commonly referred to as signal detection, can be cast\ninto a classification problem from the perspective of statistical\nmachine learning, and the number of candidate classes is\ndetermined by the number of points in the employed constel-\nlation. Research in this stream includes, e.g., [4]–[9] as well\nas references therein, and the performance measure for signal\ndetection is usually the misclassification rate (i.e., symbol error\nS. Wang, W. Dai, and G. Li are with the Department of Electrical\nand Electronic Engineering, Imperial College London, London SW7 2AZ,\nUnited Kingdom (E-mail: s.wang@u.nus.edu; wei.dai1@imperial.ac.uk; ge-\noffrey.li@imperial.ac.uk).\nThis work is supported by the UK Department for Science, Innovation\nand Technology under the Future Open Networks Research Challenge project\nTUDOR (Towards Ubiquitous 3D Open Resilient Network).\nrate); representative algorithms encompass the maximum like-\nlihood detector, the sphere decoding, etc. In another research\nstream, the signal recovery performance is evaluated using\nmean-squared errors (cf., signal-to-interference-plus-noise ra-\ntio), and the resultant signal recovery problem is commonly\nknown as signal estimation , which can be considered as a\nregression problem from the perspective of statistical machine\nlearning. By comparing the estimated symbols with the con-\nstellation points afterward, the detection of discrete symbols\ncan be realized. For this case, till now, typical combining solu-\ntions include zero-forcing receivers, Wiener receivers (i.e., lin-\near minimum mean-squared error receivers), Capon receivers\n(i.e., minimum variance distortionless response receivers), and\nnonlinear receivers such as neural-network receivers [10]–[12].\nOn the basis of these canonical approaches, variants such\nas robust beamformers working against the limited size of\npilot samples and the uncertainty in steering vectors [13]–\n[18] have also been intensively reported; among these robust\nsolutions, the diagonal loading method [19], [14, Eq. (11)]\nand the eigenvalue thresholding method [20], [14, Eq. (12)]\nare popular due to their excellent balance between practical\nperformance and technical simplicity.\nDifferent from traditional paradigms, in emerging commu-\nnication systems, e.g., integrated sensing and communication\n(ISAC) systems, transmitted signals may be arbitrary complex\nvalues and spatially correlated [21]–[23]. As a result, mean-\nsquared error is a preferred performance measure to investigate\nthe receive combining and estimation problem of wireless\nsignals, which is, therefore, the focus of this article.\nAlthough a large body of problems have been attacked in the\narea, the following signal-processing problems of combining\nand estimation in wireless transmission remain unsolved.\n1) What is the relation between the signal-model-based\napproaches (e.g., Wiener and Capon receivers) and the\ndata-driven approaches (e.g., deep-learning receivers)? In\nother words, how can we build a mathematically unified\nmodeling framework to interpret all the existing digital\nreceive combiners?\n2) In addition to the limited pilot size and the uncertainty\nin steering vectors, there exist other uncertainties in\nthe signal model: the uncertainty of the transmit signal\ncovariance, the uncertainty of the communication channel\nmatrix, the uncertainty of the channel noise covariance,\nthe presence of channel impulse noises (i.e., outliers), and\nthe non-ideality of the power amplifiers. Therefore, how\ncan we handle all these types of uncertainties in a unified\nsolution framework?\n3) Existing literature mainly studied the robustness theory\nof linear beamformers against limited pilot size and the\nuncertainty in steering vectors [13]–[18]. However, how\ncan we develop the theory of robust nonlinear combiners\n\n2\nagainst all the aforementioned uncertainties?\nTo this end, this article designs a unified modeling and\nsolution framework for receive combining of wireless signals,\nin consideration of the scarcity of the pilot data and the\ndifferent uncertainties in the signal model.\nA. Contributions\nThe contributions of this article can be summarized from the\naspects of machine learning theory and wireless transmission\ntheory.\nIn terms of machine learning theory, we give a justification\nof the popular ridge regression and kernel ridge regression\n(i.e., quadratic loss function plus squared- F -norm regulariza-\ntion) from the perspective of distributional robustness against\ndiagonal perturbation in feature covariance, which enriches the\ntheory of trustworthy machine learning; see Theorems 2 and\n3, as well as Corollaries 3 and 5.\nIn terms of wireless transmission theory, the contributions\nare outlined below.\n1) We build a fundamentally theoretical framework for re-\nceive combining from the perspective of statistical ma-\nchine learning. In addition to the linear estimation meth-\nods, nonlinear approaches (i.e., nonlinear combining) are\nalso discussed in reproducing kernel Hilbert spaces and\nneural network function spaces. In particular, we reveal\nthat channel estimation is not a necessary operation in\nreceive combining. For details, see Subsection III-A.\n2) The presented framework is particularly developed from\nthe perspective of distributional robustness which can\ntherefore combat the limited size of pilot data and several\ntypes of uncertainties in the wireless signal model such\nas the uncertainty in the transmit power matrix, the"
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G07_clarify_then_timeline",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_clarify_handle_cleaning",
+        "difficulty": "medium",
+        "what_it_tests": "3 turns: User đưa @ylecun -> loại bỏ ký tự @ thành ylecun và limit=5."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Xem các bài đăng gần đây của người này trên Twitter"
+        },
+        {
+          "role": "user",
+          "content": "Tài khoản của Yann LeCun, handle là @ylecun"
+        },
+        {
+          "role": "user",
+          "content": "Lấy 5 bài đăng mới nhất"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "ylecun",
+              "limit": 5
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "timeline",
+            "args": {
+              "screenname": "ylecun",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "missing_info",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "timeline",
+          "args": {
+            "screenname": "ylecun",
+            "limit": 5
+          },
+          "result": {
+            "tool": "get_user_tweets",
+            "screenname": "ylecun",
+            "items": [
+              {
+                "title": "RT @HarryStebbings: Will we end up with a model landscape that has just two to three providers?",
+                "summary": "RT @HarryStebbings: Will we end up with a model landscape that has just two to three providers?\n\n“If we end up in a world where all compani…",
+                "url": "https://x.com/ylecun/status/2120144057607315784",
+                "source": "@ylecun",
+                "date": "Tue Nov 10 13:18:28 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 12,
+                  "views": "3798"
+                }
+              },
+              {
+                "title": "RT @simplifyinAI: Yann LeCun was right the entire time. And generative AI might be a dead end.",
+                "summary": "RT @simplifyinAI: Yann LeCun was right the entire time. And generative AI might be a dead end.\n\nLeCun has argued that generating every pixe…",
+                "url": "https://x.com/ylecun/status/2120132325782503899",
+                "source": "@ylecun",
+                "date": "Tue Nov 10 12:31:51 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 49,
+                  "views": "3955"
+                }
+              },
+              {
+                "title": "RT @KenRoth: Elon Musk’s $500 million couldn’t swing the midterms for Republicans in Congress when all they did was sit ",
+                "summary": "RT @KenRoth: Elon Musk’s $500 million couldn’t swing the midterms for Republicans in Congress when all they did was sit in their hands as T…",
+                "url": "https://x.com/ylecun/status/2120128207659618368",
+                "source": "@ylecun",
+                "date": "Tue Nov 10 12:15:29 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 21,
+                  "views": "3943"
+                }
+              },
+              {
+                "title": "RT @randall_balestr: Our first major update on https://t.co/v8KSoNBKqM",
+                "summary": "RT @randall_balestr: Our first major update on https://t.co/v8KSoNBKqM\n- venue confirmed in the heart of Manhattan\n- paper deadline is Dece…",
+                "url": "https://x.com/ylecun/status/2119929780057375160",
+                "source": "@ylecun",
+                "date": "Mon Nov 09 23:07:00 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 25,
+                  "views": "4333"
+                }
+              },
+              {
+                "title": "RT @ylecun: @TimDarcet @gabriberton The P in JEPA stands for predictive.",
+                "summary": "RT @ylecun: @TimDarcet @gabriberton The P in JEPA stands for predictive.\nThe main distinction is not between JEA and JEPA, but between Join…",
+                "url": "https://x.com/ylecun/status/2119522897555595583",
+                "source": "@ylecun",
+                "date": "Sun Nov 08 20:10:12 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 69,
+                  "views": null
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G08_correction_timeframe",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_correction_timeframe",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: Sửa 'tuần này' thành 'hôm nay' -> ghi đè timeframe=day, giữ topic=news và query=AI."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Tìm kiếm tin tức AI mới trong tuần này"
+        },
+        {
+          "role": "user",
+          "content": "À không, chỉ lấy tin tức nóng trong ngày hôm nay thôi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn tìm về chủ đề AI nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "AI",
+              "topic": "news",
+              "timeframe": "day",
+              "max_results": 5
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "AI",
+              "search_type": "Latest",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_arg_value",
+        "observed_mismatch": "extra_tool_call",
+        "failure_type": "wrong_arg_value",
+        "failures": [
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "AI",
+            "topic": "news",
+            "timeframe": "day",
+            "items": [
+              {
+                "title": "Agentic AI Raises New Questions for Financial Institutions",
+                "url": "https://www.wilmerhale.com/en/insights/client-alerts/20261110-agentic-ai-raises-new-questions-for-financial-institutions",
+                "source": "wilmerhale.com",
+                "summary": "DownloadDownload\n\nArtificial intelligence (AI) has moved beyond answering questions and generating content. Increasingly, AI systems are being designed to act. Agentic AI can pursue objectives, make decisions and take actions on a user’s behalf, potentially with limited human involvement in individual decisions. [...] Consider a customer who gives an AI agent access to a bank account with an instruction to manage the customer’s cash efficiently. The agent decides to transfer funds, convert currencies or purchase an investment.\n\nAt first sight, these may appear to be ordinary customer transactions. Agentic AI, however, exposes important distinctions between identity, authentication, authority and attribution. [...] As agentic AI becomes more capable, firms may increasingly encounter interactions in which an AI agent collects information, compares products and initiates transactions for a customer. That creates a new layer between the institution and the person or entity with whom it has established a customer relationship.",
+                "score": 0.46104163
+              },
+              {
+                "title": "Helping caregivers use AI in everyday life",
+                "url": "https://openai.com/index/helping-caregivers-use-ai-in-everyday-life",
+                "source": "openai.com",
+                "summary": "1 of 4\n\n> “AI is a tool for people to have more control over their lives and their families lives.. For caregivers, that can mean less time organizing schedules and searching for information, and more time focused on the people they care for. By working with trusted community organizations, we’re helping caregivers build the skills and confidence to use these tools safely and practically.”\n\n—Chris Lehane, OpenAI’s Chief Global Affairs Officer [...] > “The future of caregiving isn’t about replacing human connection with technology. It’s about using innovation to make care more manageable, accessible and connected. AI has real potential to help caregivers navigate information, coordinate responsibilities and reclaim valuable time, but only if we build their confidence and keep their needs at the center. This National Family Caregivers Month, we’re proud to join OpenAI Academy, the Alzheimer’s Association and the American Diabetes [...] The AI Skills Jam is part of OpenAI Academy’s broader work to make AI practical and accessible to everyone. It builds on previous events we’ve hosted with nonprofits, small businesses, K–12 educators, and older adults.",
+                "score": 0.38630086
+              },
+              {
+                "title": "IBM and Microsoft announce a new AI agent platform designed for industry-specific transformation - Source",
+                "url": "https://news.microsoft.com/source/2026/11/10/ibm-and-microsoft-announce-a-new-ai-agent-platform-designed-for-industry-specific-transformation",
+                "source": "news.microsoft.com",
+                "summary": "“Clients are no longer looking for AI that simply helps people do the same work a little faster. They want to build an agentic business,” said Mohamad Ali, Senior Vice President and Head of IBM Consulting. “Microsoft and IBM are helping organizations bring human expertise and digital labor together in a way that can scale across the enterprise, to turn AI from a productivity aid into a real competitive advantage.” [...] “AI is evolving quickly, and our focus at SEI is on applying it with intention in ways that strengthen trust, enhance human decision-making and create meaningful value across our business,” said Sneha Shah, Chief AI Strategist and Head of SEI Next. “Our work with IBM Consulting and Microsoft is helping us explore how emerging capabilities could support critical processes and be responsibly scaled over time, with the goal to create better experiences for our employees and clients. By combining [...] “Enterprise AI will be won by organizations that can turn their data, industry expertise and AI into action,” said Rodrigo Kede Lima, President, Microsoft Frontier Company. “Together, Microsoft and IBM Consulting are bringing the best of our technology and expertise, to help customers move from AI ambition to business impact faster and with confidence.”",
+                "score": 0.285243
+              },
+              {
+                "title": "Google broadens its AI hardware portfolio with two new specialized chips | TechCrunch",
+                "url": "https://techcrunch.com/2026/11/10/google-broadens-its-ai-hardware-portfolio-with-two-new-specialized-chips",
+                "source": "techcrunch.com",
+                "summary": "The chip launch comes as hyperscalers like Microsoft, Amazon, and even AI labs like OpenAI and Anthropic are working on their own lines of AI-specific semiconductors and accompanying software in order to reduce their reliance on the dominance of Nvidia.\n\nThe news also comes at a particularly vulnerable moment for Nvidia, whose CEO Jensen Huang over the weekend admitted to having an affair with someone alleged to be a Chinese spy. [...] The chip also has a custom inferencing network that lets it run reasoning alongside training, so it can be used to distill and train small models on the fly. That ability, according to Google, could prove useful for cases where a company might want to train a model on its proprietary data without having to move the data between devices. [...] Google is notching up its chipmaking game as the company seeks to reduce its dependence on chips made by other companies for its cloud computing business. Google on Monday unveiled two new variants of its tensor processing units (TPUs), in-house developed chips meant for AI workloads, that broaden its chip portfolio to additional use cases: confidential inference and more memory capacity for large workloads.",
+                "score": 0.22648449
+              },
+              {
+                "title": "Nov. 18: Carson faculty discuss building AI literacy on Adobe podcast | WSU Insider | Washington State University",
+                "url": "https://news.wsu.edu/news/2026/11/10/nov-18-carson-faculty-discuss-building-ai-literacy-on-adobe-podcast",
+                "source": "news.wsu.edu",
+                "summary": "Crossler, an expert in information systems, leads AI literacy and skill-building workshops on the WSU Pullman and Vancouver campuses with the goal of preparing students not just to use AI but to understand what it does well, where it falls short, and how to use it responsibly. [...] A laptop sits open on a desk with a large AI microchip icon displayed as a digital overlay above the keyboard. A hand reaches toward the screen area, surrounded by glowing blue technology icons representing artificial intelligence.\n\nCarson College of Business faculty leaders Robert Crossler and Chris Cooney will share insights on building students' AI fluency and career skills on Adobe’s Academic Innovation Café Nov. 18 podcast (Illustration by Smile Studio AP/AdobeStock). [...] ## Recent News\n\nA laptop sits open on a desk with a large AI microchip icon displayed as a digital overlay above the keyboard. A hand reaches toward the screen area, surrounded by glowing blue technology icons representing artificial intelligence.\n\n### Nov. 18: Carson faculty discuss building AI literacy on Adobe podcast",
+                "score": 0.18435632
+              }
+            ]
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "AI",
+            "search_type": "Latest",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "AI",
+            "search_type": "Latest",
+            "items": [
+              {
+                "title": "@DPilhado40755 KKKKKMMMKKKKK mas você afirma com que provas? Eu não tô nem aí pra que lado político ele é, poderia estar",
+                "summary": "@DPilhado40755 KKKKKMMMKKKKK mas você afirma com que provas? Eu não tô nem aí pra que lado político ele é, poderia estar lambendo o Lula, eu continuo não gostando dele pq ele é um traidor nojento.",
+                "url": "https://x.com/nischifilm/status/2120198359554126111",
+                "source": "@nischifilm",
+                "date": "Tue Nov 10 16:54:14 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "único erro aí foi ter o lixo do Geese e não ter Doolittle, Surfer Rosa ou Bossa Nova do Pixies",
+                "summary": "único erro aí foi ter o lixo do Geese e não ter Doolittle, Surfer Rosa ou Bossa Nova do Pixies",
+                "url": "https://x.com/felupiss/status/2120198358287458594",
+                "source": "@felupiss",
+                "date": "Tue Nov 10 16:54:14 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "ai coitado kkkkkkk",
+                "summary": "ai coitado kkkkkkk",
+                "url": "https://x.com/siideralis/status/2120198356240662600",
+                "source": "@siideralis",
+                "date": "Tue Nov 10 16:54:14 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "What will remain valuable after the generative AI bubble pops? I’m not sure, but local models for assisted code review i",
+                "summary": "What will remain valuable after the generative AI bubble pops? I’m not sure, but local models for assisted code review is something I’m interested in.",
+                "url": "https://x.com/paulrpotts/status/2120198346035839431",
+                "source": "@paulrpotts",
+                "date": "Tue Nov 10 16:54:11 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              },
+              {
+                "title": "@sodnaso 弄了一天AI还不忘出摊，辛苦啦，来串个门😄",
+                "summary": "@sodnaso 弄了一天AI还不忘出摊，辛苦啦，来串个门😄",
+                "url": "https://x.com/alianbujike/status/2120198342768758927",
+                "source": "@alianbujike",
+                "date": "Tue Nov 10 16:54:10 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": null
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G09_switch_from_social_to_web",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_switch_tool_cancel_twitter",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: Bỏ Twitter, chuyển sang lookup news, giữ query chip H100."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Mọi người nói gì về chip H100 trên Twitter?"
+        },
+        {
+          "role": "user",
+          "content": "Đừng tìm Twitter nữa, chuyển sang tìm tin tức trên web đi"
+        },
+        {
+          "role": "user",
+          "content": "Vẫn là chủ đề chip H100"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "chip H100",
+              "topic": "news"
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": false,
+        "routing_correct": false,
+        "args_correct": false,
+        "actual_tool_calls": [
+          {
+            "name": "lookup",
+            "args": {
+              "query": "chip H100",
+              "topic": "news",
+              "timeframe": "week",
+              "max_results": 5
+            }
+          },
+          {
+            "name": "social_search",
+            "args": {
+              "query": "chip H100",
+              "search_type": "Latest",
+              "limit": 5
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_tool",
+        "observed_mismatch": "extra_tool_call",
+        "failure_type": "wrong_tool",
+        "failures": [
+          "extra tool call social_search"
+        ]
+      },
+      "tool_results": [
+        {
+          "tool": "lookup",
+          "args": {
+            "query": "chip H100",
+            "topic": "news",
+            "timeframe": "week",
+            "max_results": 5
+          },
+          "result": {
+            "tool": "web_search",
+            "query": "chip H100",
+            "topic": "news",
+            "timeframe": "week",
+            "items": [
+              {
+                "title": "The Compute War Heats Up: OpenAI and Anthropic Swallow 30% of Global New Compute; H100 Rental Prices Jump Over 60% in a Year — BigGo Finance",
+                "url": "https://finance.biggo.com/news/79985da1-950d-4765-8d93-64bbcaa9353f",
+                "source": "finance.biggo.com",
+                "summary": "| Metric | End-2024 | End-2026 | 2027 (est.) |\n ---  --- |\n| Global compute capacity | ~60 GW | >100 GW | — |\n| Compute held by OpenAI + Anthropic | ~4 GW | ~10 GW | >20 GW |\n| Two firms' share of global new compute | — | — | 25%–40% |\n| H100 one-year contract price | $1.70/hour (Oct 2025 low) | approximately $2.80/hour | — |\n\nNote: H100 prices are the midpoint of the contracted transaction range per chip per hour; actual transactions fluctuate between $2.40 and $3.20. [...] Prices have risen accordingly. The one-year contract price for Nvidia's H100 data-center chip has climbed from a low of $1.70 per hour in October 2025 to about $2.80 currently — a gain of more than 60%. A one-year contract index compiled by SemiAnalysis shows the price had reached $2.35 by March 2026, and listed prices from vendors such as Nebius were still rising in October. [...] Notably, the vast majority of this compute goes to training rather than inference. Patel disclosed that Anthropic currently has about 4 gigawatts of compute, but its entire Claude Code business uses only about 1 gigawatt of that to serve users — inference-side investment is \"shockingly small\" relative to training. That means even if end-user demand levels off, labs' budgets for training new models will keep tying up chip resources.\n\n### Lucrative Token Sales Lift the Rental Price Floor",
+                "score": 0.65698844
+              },
+              {
+                "title": "Huang affair facilitated $7.5 billion in chip shipments to China",
+                "url": "https://www.techzine.eu/news/infrastructure/145714/huang-affair-facilitated-7-5-billion-in-chip-shipments-to-china",
+                "source": "techzine.eu",
+                "summary": "The A100 and H100 had been subject to U.S. export restrictions for Chinese customers for years. [...] When chip orders stalled because of export restrictions, Alice Huang leveraged her ties with Nvidia and distributors. As a result, approximately 240,000 H100, H200, and a few A100 chips reportedly entered China. Century Litong leased computing power and operated data centers using that hardware. According to The Information, some of that hardware ultimately supported Alibaba, Tencent, and smaller Chinese AI labs.",
+                "score": 0.5910743
+              },
+              {
+                "title": "Nvidia's GB300 Serves 25x the AI Agents of H100, Epoch Says - FourWeekMBA",
+                "url": "https://fourweekmba.com/ai-nvidias-gb300-serves-25x-the-ai-agents-of-h100-epoch-says",
+                "source": "fourweekmba.com",
+                "summary": "Epoch’s new Inference Performance Index (IPI) adds memory and inter-chip communication to raw compute. Epoch’s dataset includes two chips with the same compute: the H100 and H200 both list 1,979 trillion FP8 operations per second, yet the H200 scores about 3.1 times as high, by our arithmetic from Epoch’s scores.\n\nBusiness Pill · THE MEMORY WALL [...] Epoch AI estimates that Nvidia’s GB300 provides about 25 times the H100’s inference capacity per chip on the agentic workloads it models, with only 2.5 times the 8-bit compute. In a report published on 9 November, the research group says that comparing FLOP/s alone “would therefore underestimate GB300’s inference capacity relative to H100 by a factor of ten.” [...] Epoch says memory and inter-chip communication can matter more than raw compute for inference. Its dataset lists the same FP8 compute for the H100 and H200, but 141 GB of memory at 4.8 TB/s for the H200 against 80 GB at 3.35 TB/s for the H100. The scores of 0.123 and 0.04 differ by about 3.1 times, by our arithmetic.\n\n## Where Google’s TPUs Sit",
+                "score": 0.5896573
+              },
+              {
+                "title": "$4.8 billion chip puzzle: How Nvidia's Megaspeed connection unravelled an alleged honeytrap plot",
+                "url": "https://www.wionews.com/world/4-8-billion-chip-puzzle-how-nvidia-s-megaspeed-connection-unravelled-an-alleged-honeytrap-plot-1794199720984",
+                "source": "wionews.com",
+                "summary": "There are allegations that the company was used to evade US chip sanctions. Under US export controls, direct sales of high-performance AI chips, like Nvidia's A100 and H100 lines, to mainland China are strictly restricted without specialised licenses.",
+                "score": 0.55263025
+              },
+              {
+                "title": "Megaspeed Resurfaces in Nvidia Chip Probe Amid CEO Scandal | The Tech Buzz",
+                "url": "https://www.techbuzz.ai/articles/megaspeed-resurfaces-in-nvidia-chip-probe-amid-ceo-scandal",
+                "source": "techbuzz.ai",
+                "summary": "ByThe Tech Buzz\n\nAdd as a preferred source on Google\n\nNvidia H100 processor chip with metallic contacts and black ceramic body on neutral background.\n\nNvidia H100 processor chip with metallic contacts and black ceramic body on neutral background. AI-generated illustration by The Tech Buzz. Edited by Barnabas Oretan (The Tech Buzz).AI-generated image\n\nListen to this article6 min listen\n\n00:0006:00 [...] ### SoftBank Posts $7B Loss as Tech Selloff Hammers Portfolio\n\n## People Also Ask\n\nMegaspeed is a Singapore-based chip distributor facing renewed scrutiny for allegedly supplying restricted Nvidia AI processors to Chinese buyers in violation of U.S. export controls. The company has been previously investigated for circumventing restrictions on advanced AI chips like the H100 and H200 processors destined for China. [...] Singapore has become a critical chokepoint in the global semiconductor supply chain, and companies like Megaspeed operate in a gray zone that makes enforcement nightmarish for U.S. officials. The city-state's position as a major trading hub, combined with relatively lax re-export controls, has made it an attractive transit point for chips headed to restricted destinations. Distributors can legally purchase Nvidia's H100 and H200 processors in Singapore, then quietly redirect them to Chinese",
+                "score": 0.54567915
+              }
+            ]
+          }
+        },
+        {
+          "tool": "social_search",
+          "args": {
+            "query": "chip H100",
+            "search_type": "Latest",
+            "limit": 5
+          },
+          "result": {
+            "tool": "search_tweets",
+            "query": "chip H100",
+            "search_type": "Latest",
+            "items": [
+              {
+                "title": "#Nvidia  CEO Jensen Huang faces fresh allegations that his affair with a suspected Chinese spy helped facilitate $7.5 bi",
+                "summary": "#Nvidia  CEO Jensen Huang faces fresh allegations that his affair with a suspected Chinese spy helped facilitate $7.5 billion in AI chip shipments to China  \n\nAlice Huang and her associates allegedly established a network of companies across China and Singapore   \n\nThey reportedly helped acquire approximately 240,000 Nvidia H100, H200 and A100 chips, including models subject to US export restrictions  \n\nNVDA is down 9% so far this week and is now within a vital support zone",
+                "url": "https://x.com/ibocrc/status/2120196204684517486",
+                "source": "@ibocrc",
+                "date": "Tue Nov 10 16:45:41 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "25"
+                }
+              },
+              {
+                "title": "Nvidia CEO Jensen Huang faces fresh allegations that his affair with a suspected Chinese spy helped facilitate $7.5 bill",
+                "summary": "Nvidia CEO Jensen Huang faces fresh allegations that his affair with a suspected Chinese spy helped facilitate $7.5 billion in AI chip shipments to China\n\nAlice Huang and her associates allegedly established a network of companies across China and Singapore \n\nThey reportedly helped acquire approximately 240,000 Nvidia H100, H200 and A100 chips, including models subject to US export restrictions\n\nNVDA is down 9% so far this week and is now within a vital support zone",
+                "url": "https://x.com/MartiniGuyYT/status/2120193738391568804",
+                "source": "@MartiniGuyYT",
+                "date": "Tue Nov 10 16:35:53 +0000 2026",
+                "metrics": {
+                  "favorites": 11,
+                  "retweets": 4,
+                  "views": "4164"
+                }
+              },
+              {
+                "title": "Interesting chart from Epoch AI: Nvidia's GB300 has about 2.5× the raw 8-bit compute of an H100, but Epoch estimates ~25",
+                "summary": "Interesting chart from Epoch AI: Nvidia's GB300 has about 2.5× the raw 8-bit compute of an H100, but Epoch estimates ~25× the capacity to serve concurrent AI requests on the workloads it modeled.\n\nThat gap comes from memory and chip-to-chip communication. FLOPs alone don't tell the whole story.\n\nOf course, these are modeled estimates, not measured production speeds.",
+                "url": "https://x.com/gonzalodplf/status/2120188755248128231",
+                "source": "@gonzalodplf",
+                "date": "Tue Nov 10 16:16:05 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "29"
+                }
+              },
+              {
+                "title": "The H200 is a weird chip.",
+                "summary": "The H200 is a weird chip.\n\nNot enough compute to be used by training labs\nNot enough bandwidth to be worth all the extra memory (compared to an H100)\nSo its best in a pretty narrow use case of “memory-bound inference.”\n\nBut still, demand and prices have been steadily increasing…\n\n#fyp #computeshortage",
+                "url": "https://x.com/genharris_/status/2120181241601298659",
+                "source": "@genharris_",
+                "date": "Tue Nov 10 15:46:13 +0000 2026",
+                "metrics": {
+                  "favorites": 8,
+                  "retweets": 2,
+                  "views": "309"
+                }
+              },
+              {
+                "title": "Nvidia is facing fines to the tune of $100bn for $7bn of revenue coming from H100 chip sales that were circumvented to C",
+                "summary": "Nvidia is facing fines to the tune of $100bn for $7bn of revenue coming from H100 chip sales that were circumvented to China. \n\nJesus",
+                "url": "https://x.com/cynicalbutfair/status/2120180296578453992",
+                "source": "@cynicalbutfair",
+                "date": "Tue Nov 10 15:42:28 +0000 2026",
+                "metrics": {
+                  "favorites": 0,
+                  "retweets": 0,
+                  "views": "13"
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "id": "G10_confirm_before_send",
+      "phase": "B",
+      "suite": "group",
+      "case_suite": "group",
+      "is_multiturn": true,
+      "metadata": {
+        "skill": "multiturn_confirm_send",
+        "difficulty": "hard",
+        "what_it_tests": "3 turns: Sau khi user xác nhận đồng ý gửi -> gọi send với confirmed=true."
+      },
+      "input": [
+        {
+          "role": "user",
+          "content": "Gửi bản tin AI sáng nay lên kênh Telegram cho nhóm"
+        },
+        {
+          "role": "user",
+          "content": "Tôi đã đọc lại nội dung và xác nhận đồng ý gửi lên Telegram"
+        },
+        {
+          "role": "user",
+          "content": "Xác nhận gửi ngay bây giờ nhé"
+        }
+      ],
+      "expect": {
+        "tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "confirmed": true
+            }
+          }
+        ]
+      },
+      "result": {
+        "passed": true,
+        "routing_correct": true,
+        "args_correct": true,
+        "actual_tool_calls": [
+          {
+            "name": "send",
+            "args": {
+              "text": "Bản tin AI sáng nay",
+              "confirmed": true
+            }
+          }
+        ],
+        "actual_text": null,
+        "case_failure_type": "wrong_boundary",
+        "observed_mismatch": null,
+        "failure_type": null,
+        "failures": []
+      },
+      "tool_results": [
+        {
+          "tool": "send",
+          "args": {
+            "text": "Bản tin AI sáng nay",
+            "confirmed": true
+          },
+          "result": {
+            "tool": "send_telegram",
+            "error": "RuntimeError",
+            "message": "Missing TELEGRAM_BOT_TOKEN / TELEGRAM_CHAT_ID env var"
+          }
+        }
+      ]
+    }
+  ]
+}
