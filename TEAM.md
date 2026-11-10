@@ -12,7 +12,7 @@
 | STT | Họ tên | MSSV | Email | GitHub | Vai trò |
 | --: | ------ | ---- | ----- | ------ | ------- |
 |   1 |  Hoàng Dương Anh Quân      |   2A202603735   |   26ai.quanhda@vinuni.edu.vn    |        |         |
-|   2 |  Nguyễn Quang Huy      |      |       |        |         |
+|   2 |  Nguyễn Quang Huy      |   2A202603768   |   26ai.huynq13@vinuni.edu.vn    |   nguyenquanghuy091204     |    Thực hiện Checkpoint 4 (CP4) - Thiết kế bộ Eval nhóm 10 cases     |
 |   3 |  Đào Nguyễn Quang Thành      |  2A202603754    | 26ai.thanhdnq@vinuni.edu.vn      | DaoThanh11       | Phụ trách lập tool mới, viết test case tương ứng với tool mới        |
 |   4 |        |      |       |        |         |
 ## Cá nhân
