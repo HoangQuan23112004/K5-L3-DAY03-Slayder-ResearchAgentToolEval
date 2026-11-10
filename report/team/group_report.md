@@ -8,7 +8,7 @@
 
 ## 1. Thông tin nhóm
 
-- Tên nhóm:
+- Tên nhóm: Slayder
 - Thành viên và phân công: xem [TEAM.md](../../TEAM.md)
 - Provider/model dùng cho v0–v3: OpenRouter / `openai/gpt-4o-mini`.
 
@@ -63,7 +63,7 @@ Lấy từ `starter_v0/artifacts/version_log.csv` và `starter_v0/runs/*.json`. 
 | Version | Changed Artifact | Hypothesis | Metric Before | Metric After | Run File |
 |---|---|---|---:|---:|---|
 | v0 | baseline | Đo starter trước sửa | — | 70% (14/20) | `starter_v0/runs/v0_B_base_openrouter_20261110T173810231309.json` |
-| v1* | system_prompt.md | Thay chỉ dẫn đoán/gửi ngay bằng routing, hỏi lại và xác nhận | 70% | 90% (18/20) | `starter_v0/runs/v1_B_base_openrouter_20261110T183004214366.json` |
+| v1 | system_prompt.md | Thay chỉ dẫn đoán/gửi ngay bằng routing, hỏi lại và xác nhận | 70% | 90% (18/20) | `starter_v0/runs/v1_B_base_openrouter_20261110T183004214366.json` |
 | v2 | system_prompt.md + tools.yaml | Làm rõ điều kiện gọi tool và xác nhận để giảm nhầm response_type và gọi thừa nguồn đã hủy | 90% | 95% (19/20) | `starter_v0/runs/v2_B_base_openrouter_20261110T183941086642.json` |
 | v3 | system_prompt.md | Ưu tiên xác nhận đăng bài trước hỏi dữ liệu thiếu để sửa R12 | 95% | 90% (18/20) | `starter_v0/runs/v3_B_base_openrouter_20261110T184513703369.json` |
 
