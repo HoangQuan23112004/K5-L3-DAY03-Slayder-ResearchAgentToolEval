@@ -1,9 +1,3 @@
-# Báo cáo cá nhân — HoVaTen-MSSV
-
-Đổi tên file theo quy tắc `MSSV_HoTen.md`.
-
-Ví dụ: `20241234_NguyenVanAn.md`.
-
 ## 1. Thông tin thành viên
 
 - Họ tên:
