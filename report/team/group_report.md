@@ -59,7 +59,10 @@ Danh sách dưới đây khớp các tool đang được đăng ký trong `start
 
 ## 3. Giải pháp
 
-> Tóm tắt các thay đổi chính trong `starter_v0/artifacts/system_prompt.md` và `starter_v0/artifacts/tools.yaml`, và tool mới nhóm viết (tên, làm gì, khi nào agent nên gọi).
+## 3. Giải pháp
+- **`system_prompt.md`:** Bỏ chỉ dẫn tự đoán thông tin, gửi ngay và ép xử lý một bước. Bổ sung quy tắc chọn tool, hỏi lại khi thiếu tài khoản/URL, xác nhận trước khi gửi và ưu tiên yêu cầu mới nhất khi người dùng chuyển nguồn tìm kiếm.
+- **`tools.yaml`:** Làm rõ chức năng, khi nào dùng/không dùng từng tool; quy ước handle không có `@`, `topic=news`, `timeframe`, `search_type=Top|Latest`. Tool `send` chỉ được gọi với `confirmed=true` sau khi người dùng xác nhận nội dung cuối và nơi gửi.
+- **Kiểm chứng:** Đồng bộ các file `TOOL.md`, chạy contract tests và base eval; ghi giả thuyết, hash và kết quả từng phiên bản vào `version_log.csv`.
 
 -
 
