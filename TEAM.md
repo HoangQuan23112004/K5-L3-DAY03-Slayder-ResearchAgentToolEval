@@ -40,7 +40,27 @@ Sao chép mục dưới đây cho từng thành viên.
 ### Bằng chứng
 
 -
+## Hoàng Dương Anh Quân - 2A202603735
 
+### Phần việc phụ trách
+
+- Tối ưu system prompt và tool declaration ở CP2.
+- Phân tích log, so sánh và ghi kết quả v0–v3.
+
+### Đóng góp cụ thể
+
+- Bổ sung routing, hỏi lại khi thiếu thông tin và xác nhận trước khi gửi.
+- Làm rõ mô tả, tham số tool và đồng bộ `TOOL.md`.
+- Cập nhật `version_log.csv` và bảng B1/B2 trong báo cáo nhóm.
+- Kết quả v0 → v3: **70% → 90% → 95% → 90%**; ghi nhận lỗi hồi quy ở v3.
+
+### Bằng chứng
+
+- Cấu hình: `starter_v0/artifacts/system_prompt.md`, `tools.yaml`.
+- Nhật ký: `starter_v0/artifacts/version_log.csv` và các file changes.
+- Kết quả eval: `starter_v0/runs/`.
+- Báo cáo: `report/team/group_report.md`, bảng B1/B2.
+- Kiểm tra bằng eval và pytest: **55 contract tests PASS**, toàn suite **62 passed, 17 skipped**.
 
 ## NguyenQuangHuy-2A202603768
 
