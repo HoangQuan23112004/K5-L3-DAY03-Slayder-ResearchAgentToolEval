@@ -173,9 +173,23 @@ Lỗi đặc thù của model nhỏ (đếm từ run JSON):
 
 ## 5. Khó khăn và cách xử lý
 
-> Khó khăn chính và cách nhóm xử lý. Nếu gặp lỗi kỹ thuật (provider lỗi, hết quota API, tool không chạy), mô tả lỗi và dẫn bằng chứng: run JSON, log, ảnh chụp.
+Trong quá trình xây dựng, tối ưu hóa và đánh giá Research Agent, nhóm đã gặp một số khó khăn kỹ thuật chính và đã xử lý dứt điểm như sau:
 
--
+1. **Lỗi Provider do môi trường thiếu file `.env` (Lỗi kỹ thuật):**
+   - *Khó khăn:* Khi đồng bộ code mới hoặc clone repo từ GitHub, do `.env` được đưa vào `.gitignore` để bảo mật nên file môi trường bị thiếu, dẫn đến khi chạy `run_eval.py` phát sinh lỗi `RuntimeError: Missing API key env var: OPENROUTER_API_KEY` (toàn bộ 10 case bị đánh dấu `provider_error`, run không hợp lệ).
+   - *Cách xử lý:* Tạo ngay file `starter_v0/.env` từ `.env.example`, cấu hình đầy đủ các khóa API (`OPENROUTER_API_KEY`, `TAVILY_API_KEY`, `FIRECRAWL_API_KEY`, `RAPIDAPI_KEY`) và chạy lệnh kiểm tra tiền trạm `python scripts/preflight_provider.py` trước khi thực thi eval chính thức.
+
+2. **Model có xu hướng tự tiện hành động và đoán mò theo Starter Prompt (v0):**
+   - *Khó khăn:* Prompt gốc chứa các chỉ dẫn xấu (xúi giục đoán mò account, bịa URL và gửi ngay), khiến agent bị FAIL hàng loạt ở các case thiếu dữ kiện (`R10_missing_handle`, `R11_missing_url`) và vi phạm ranh giới an toàn (`R12_confirm_before_send`).
+   - *Cách xử lý:* Tại phiên bản `v1` và `v2`, nhóm đã loại bỏ hoàn toàn các câu lệnh tiêu cực; thiết lập nguyên tắc phân tầng rõ ràng trong `system_prompt.md`: Bắt buộc gọi `clarify(response_type="yes_no")` để xin xác nhận trước khi gọi `send(confirmed=true)`, và gọi `clarify(response_type="text")` khi thiếu thông tin thiết yếu.
+
+3. **Lỗi nối thừa từ khóa vào query khi tìm kiếm (`wrong_arg_value`):**
+   - *Khó khăn:* Ở các case tìm tin tức web (`R03`, `R13`), model tự động ghép chữ `"news"` vào trường `query` thành `"AI news"` dù đã chọn `topic="news"`.
+   - *Cách xử lý:* Viết lại mô tả trong `tools.yaml` và bổ sung quy tắc trong prompt: Hướng dẫn model giữ nguyên từ khóa chủ đề cốt lõi của người dùng, phân tách rạch ròi giữa từ khóa tìm kiếm (`query`) và các bộ lọc thời gian/phân loại (`topic`, `timeframe`). Giúp case accuracy tăng từ 70% lên 95% ở `v2`.
+
+4. **Đảm bảo tính toàn vẹn và hợp đồng của 3 Tool mới (`CP3`):**
+   - *Khó khăn:* Khi tự phát triển 3 tool mới (`dedupe`, `sentiment`, `export_file`), tool dễ gặp nguy cơ làm sập hệ thống (crash/raise Exception) khi gặp dữ liệu đầu vào rỗng, sai định dạng hoặc lỗi runtime.
+   - *Cách xử lý:* Áp dụng cơ chế bắt ngoại lệ toàn diện trong từng `tool.py`, luôn trả về dictionary có chứa mã lỗi (ví dụ: `{"tool": "dedupe", "error": "..."}`) thay vì raise. Viết đủ 9 bài unit test trong `tests/test_tools_todo.py` và chạy `pytest tests/test_tool_contract.py` đạt 70/70 test xanh để đảm bảo tính đồng bộ tuyệt đối giữa Code, YAML và Eval.
 
 ## 6. Tổng hợp đóng góp
 
