@@ -62,15 +62,7 @@ Danh sách dưới đây khớp các tool đang được đăng ký trong `start
 - **`tools.yaml`:** Làm rõ chức năng, khi nào dùng/không dùng từng tool; quy ước handle không có `@`, `topic=news`, `timeframe`, `search_type=Top|Latest`. Tool `send` chỉ được gọi với `confirmed=true` sau khi người dùng xác nhận nội dung cuối và nơi gửi.
 - **Kiểm chứng:** Đồng bộ các file `TOOL.md`, chạy contract tests và base eval; ghi giả thuyết, hash và kết quả từng phiên bản vào `version_log.csv`.
 
-- **Tool mới:**
-
-| Item | Evidence File | What Worked | Risk / Guardrail |
-|---|---|---|---|
-| Ba tool mới (`dedupe`, `sentiment`, `export_file`) | [dedupe](../../starter_v0/tools/dedupe/tool.py), [sentiment](../../starter_v0/tools/sentiment/tool.py), [export_file](../../starter_v0/tools/export_file/tool.py), đăng ký tại [tools/__init__.py](../../starter_v0/tools/__init__.py) và khai báo tại [tools.yaml](../../starter_v0/artifacts/tools.yaml) | `dedupe` loại URL có tracking và nội dung tương tự; `sentiment` gắn nhãn văn bản tiếng Anh/Việt; `export_file` xuất JSON, HTML hoặc PDF. | `dedupe` dùng ngưỡng tương đồng văn bản; `sentiment` dựa trên từ điển nên không hiểu đầy đủ ngữ cảnh; PDF cần `reportlab` và font Unicode phù hợp. |
-| Unit test cho tool mới (3 test/tool, tổng 9) | [test_tools_todo.py](../../starter_v0/tests/test_tools_todo.py) — lệnh chạy: `pytest -q tests/test_tools_todo.py -k "dedupe or sentiment or export_file"` từ `starter_v0/` | Chạy trong virtual environment Python 3.12: **9 passed, 14 deselected**. Mỗi tool có test đường đi chính, input không hợp lệ và lỗi; export còn kiểm tra PDF/HTML, tên file và không ghi đè. | Chỉ chạy 9 test cho ba tool mới; 14 test còn lại trong file không thuộc phạm vi chạy này. |
-| UI (lệnh chạy + link dùng thử) | [app.py](../../starter_v0/app.py), [requirements.txt](../../starter_v0/requirements.txt), lệnh và link ở A1, [transcript 4 lượt](../../starter_v0/transcripts/v3_openrouter_20261111T011751683948.transcript.json) | Đã chạy `streamlit run app.py` trong virtual environment Python 3.12, xác nhận `http://127.0.0.1:8501/_stcore/health` trả `200 ok`; mở UI trên browser thấy tiêu đề Slayder, lời chào, các gợi ý và ô chat. Transcript cũng ghi nhận hỏi URL, đọc URL được cung cấp, tìm tin và xin xác nhận gửi. | Máy hiện không có `starter_v0/.env`, nên lần chạy này chỉ xác nhận UI render, chưa xác minh gửi yêu cầu tới model. Link tunnel ở A1 là link tạm thời; không nhập API key vào chat. |
-
-Ví dụ lỗi mà unit test bắt được nhưng eval không bắt được: gọi `export_file` hai lần cùng tên không được ghi đè tệp đã có; test xác nhận lần thứ hai được lưu với hậu tố `_1`. Eval routing chỉ kiểm tra việc chọn tool/tham số, không kiểm tra va chạm tên tệp hay tính toàn vẹn của tệp đã xuất.
+- **Tool mới:** Ba tool mới (`dedupe`, `sentiment`, `export_file`), `dedupe` loại URL có tracking và nội dung tương tự; `sentiment` gắn nhãn văn bản tiếng Anh/Việt; `export_file` xuất JSON, HTML hoặc PDF.
 
 ## 4. Kết quả — PHẦN B: Chi tiết và bằng chứng
 
@@ -125,6 +117,19 @@ Lấy từ transcript live [v3_openrouter_20261111T011751683948.transcript.json]
 | 2 | Cung cấp `https://openai.com/research/` và yêu cầu tóm tắt | `fetch(url="https://openai.com/research/")` | Cùng artifact lượt 1 | `answered`: đọc URL và trả lời. |
 | 3 | “Tin tức AI hôm nay có gì nổi bật?” | `lookup(query="AI", topic="news", timeframe="day", max_results=5)` | Cùng artifact lượt 1 | `answered`: trả tin từ kết quả tìm web. |
 | 4 | “Hãy gửi bản tin AI vừa tìm lên Telegram.” | `clarify(response_type="yes_no")` | Cùng artifact lượt 1 | `waiting_for_user`: hỏi xác nhận; transcript không có lệnh `send`. |
+
+Các transcript khác có nhãn v0–v3 nhưng dùng cùng hash prompt và tool hiện tại. Chúng không thay thế run JSON ở B1 để so sánh hiệu quả giữa các phiên bản.
+
+### B5a. Required Evidence — Tool mới, unit test, UI
+
+| Item | Evidence File | What Worked | Risk / Guardrail |
+|---|---|---|---|
+| Ba tool mới (`dedupe`, `sentiment`, `export_file`) | [dedupe](../../starter_v0/tools/dedupe/tool.py), [sentiment](../../starter_v0/tools/sentiment/tool.py), [export_file](../../starter_v0/tools/export_file/tool.py), đăng ký tại [tools/__init__.py](../../starter_v0/tools/__init__.py) và khai báo tại [tools.yaml](../../starter_v0/artifacts/tools.yaml) | `dedupe` loại URL có tracking và nội dung tương tự; `sentiment` gắn nhãn văn bản tiếng Anh/Việt; `export_file` xuất JSON, HTML hoặc PDF. | `dedupe` dùng ngưỡng tương đồng văn bản; `sentiment` dựa trên từ điển nên không hiểu đầy đủ ngữ cảnh; PDF cần `reportlab` và font Unicode phù hợp. |
+| Unit test cho tool mới (3 test/tool, tổng 9) | [test_tools_todo.py](../../starter_v0/tests/test_tools_todo.py) — lệnh chạy: `pytest -q tests/test_tools_todo.py -k "dedupe or sentiment or export_file"` từ `starter_v0/` | Chạy trong virtual environment Python 3.12: **9 passed**. Mỗi tool có test đường đi chính, input không hợp lệ và lỗi; export còn kiểm tra PDF/HTML, tên file và không ghi đè. | Chỉ chạy 9 test cho ba tool mới; 14 test còn lại trong file không thuộc phạm vi chạy này. |
+| UI (lệnh chạy + link dùng thử) | [app.py](../../starter_v0/app.py), [requirements.txt](../../starter_v0/requirements.txt), lệnh và link ở A1, [transcript 4 lượt](../../starter_v0/transcripts/v3_openrouter_20261111T011751683948.transcript.json) | UI mở được trên máy và qua link tunnel; ghi transcript có lượt hỏi URL, bổ sung URL, tìm tin và xin xác nhận gửi. |Link tunnel tạm thời; UI hiển thị provider_error khi lỗi provider và không nhập API key vào chat. |
+
+Tool unit tests: 9 cases, mỗi tool có 3 case mới
+Ví dụ lỗi mà unit test bắt được nhưng eval không bắt được: gọi `export_file` hai lần cùng tên không được ghi đè tệp đã có; test xác nhận lần thứ hai được lưu với hậu tố `_1`.
 
 ### B5. Bonus Evidence
 
@@ -195,7 +200,7 @@ Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEA
 
 - **Fix thuộc `tools.yaml` (CP2–CP3):** Làm rõ khi nào dùng/không dùng tool, quy ước tham số và điều kiện `confirmed=true`. Khi thêm tool mới cần đồng bộ registry, implementation, `TOOL.md` và unit test.
 
-- **Hạn chế qua các checkpoint:** CP1 phụ thuộc kết nối và khả năng truy cập API; CP2 có hồi quy khi sửa prompt (v2 đạt 95%, v3 còn 90%). Với CP3–CP4, test mock và bộ case hữu hạn chưa phản ánh hết dữ liệu thực tế. CP5 cần kiểm tra thêm trải nghiệm UI và hội thoại liên tục. Bằng chứng tool mới, group eval và live chat trong báo cáo hiện còn cần bổ sung.
+- **Hạn chế qua các checkpoint:** CP1 phụ thuộc kết nối và khả năng truy cập API; CP2 có hồi quy khi sửa prompt (v2 đạt 95%, v3 còn 90%). Với CP3–CP4, test mock và bộ case hữu hạn chưa phản ánh hết dữ liệu thực tế. CP5 cần kiểm tra thêm trải nghiệm UI và hội thoại liên tục.
 
 - **Failure cần review thủ công:** Chất lượng tóm tắt, độ chính xác của nguồn, câu hỏi làm rõ có hợp lý không, xác nhận có đúng nội dung và nơi gửi không, cùng khả năng UI hiển thị lỗi thật. Chọn đúng tool chưa bảo đảm kết quả cuối đáp ứng yêu cầu.
 
