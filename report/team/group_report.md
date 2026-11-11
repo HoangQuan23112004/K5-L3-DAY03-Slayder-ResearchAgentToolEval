@@ -183,10 +183,15 @@ Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEA
 
 ## 7. Hạn chế và hướng cải thiện — B6. Reflection
 
-- Fix nào thuộc `system_prompt.md`?
-- Fix nào thuộc `tools.yaml`?
-- Failure nào cần review thủ công thay vì chấm tự động?
-- Nếu có thêm một vòng, nhóm sẽ thử giả thuyết nào?
+- **Fix thuộc `system_prompt.md` (CP2):** Bỏ tự đoán thông tin, bổ sung routing, hỏi lại và xác nhận trước khi gửi. Ưu tiên yêu cầu mới nhất khi người dùng đổi chủ đề hoặc nguồn tìm kiếm.
+
+- **Fix thuộc `tools.yaml` (CP2–CP3):** Làm rõ khi nào dùng/không dùng tool, quy ước tham số và điều kiện `confirmed=true`. Khi thêm tool mới cần đồng bộ registry, implementation, `TOOL.md` và unit test.
+
+- **Hạn chế qua các checkpoint:** CP1 phụ thuộc kết nối và khả năng truy cập API; CP2 có hồi quy khi sửa prompt (v2 đạt 95%, v3 còn 90%). Với CP3–CP4, test mock và bộ case hữu hạn chưa phản ánh hết dữ liệu thực tế. CP5 cần kiểm tra thêm trải nghiệm UI và hội thoại liên tục. Bằng chứng tool mới, group eval và live chat trong báo cáo hiện còn cần bổ sung.
+
+- **Failure cần review thủ công:** Chất lượng tóm tắt, độ chính xác của nguồn, câu hỏi làm rõ có hợp lý không, xác nhận có đúng nội dung và nơi gửi không, cùng khả năng UI hiển thị lỗi thật. Chọn đúng tool chưa bảo đảm kết quả cuối đáp ứng yêu cầu.
+
+- **Nếu có thêm một vòng:** Nhóm sẽ thử giả thuyết rằng việc xác định rõ nguồn còn hiệu lực trước mỗi lần gọi tool giúp giảm gọi thừa `social_search`. Chỉ thay một yếu tố, chạy lại base/group eval, unit test và live chat; đối chiếu log để kiểm tra cải thiện lẫn hồi quy.
 
 ## 8. Tài liệu tham khảo
 
