@@ -62,7 +62,7 @@ Danh sách dưới đây khớp các tool đang được đăng ký trong `start
 - **`tools.yaml`:** Làm rõ chức năng, khi nào dùng/không dùng từng tool; quy ước handle không có `@`, `topic=news`, `timeframe`, `search_type=Top|Latest`. Tool `send` chỉ được gọi với `confirmed=true` sau khi người dùng xác nhận nội dung cuối và nơi gửi.
 - **Kiểm chứng:** Đồng bộ các file `TOOL.md`, chạy contract tests và base eval; ghi giả thuyết, hash và kết quả từng phiên bản vào `version_log.csv`.
 
--**Tool mới**
+- **Tool mới:**
 | Item | Evidence File | What Worked | Risk / Guardrail |
 |---|---|---|---|
 | Ba tool mới (`dedupe`, `sentiment`, `export_file`) | [dedupe](../../starter_v0/tools/dedupe/tool.py), [sentiment](../../starter_v0/tools/sentiment/tool.py), [export_file](../../starter_v0/tools/export_file/tool.py), đăng ký tại [tools/__init__.py](../../starter_v0/tools/__init__.py) và khai báo tại [tools.yaml](../../starter_v0/artifacts/tools.yaml) | `dedupe` loại URL có tracking và nội dung tương tự; `sentiment` gắn nhãn văn bản tiếng Anh/Việt; `export_file` xuất JSON, HTML hoặc PDF. | `dedupe` dùng ngưỡng tương đồng văn bản; `sentiment` dựa trên từ điển nên không hiểu đầy đủ ngữ cảnh; PDF cần `reportlab` và font Unicode phù hợp. |
