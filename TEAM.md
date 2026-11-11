@@ -51,7 +51,7 @@ Sao chép mục dưới đây cho từng thành viên.
 
 - Bổ sung routing, hỏi lại khi thiếu thông tin và xác nhận trước khi gửi.
 - Làm rõ mô tả, tham số tool và đồng bộ `TOOL.md`.
-- Cập nhật `version_log.csv` và bảng B1/B2 trong báo cáo nhóm.
+- Cập nhật `version_log.csv`, bảng B1/B2 và giải pháp thay đổi trong báo cáo nhóm. 
 - Kết quả v0 → v3: **70% → 90% → 95% → 90%**; ghi nhận lỗi hồi quy ở v3.
 
 ### Bằng chứng
