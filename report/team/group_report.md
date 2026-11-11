@@ -195,7 +195,7 @@ Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEA
 
 - **Fix thuộc `tools.yaml` (CP2–CP3):** Làm rõ khi nào dùng/không dùng tool, quy ước tham số và điều kiện `confirmed=true`. Khi thêm tool mới cần đồng bộ registry, implementation, `TOOL.md` và unit test.
 
-- **Hạn chế qua các checkpoint:** CP1 phụ thuộc kết nối và khả năng truy cập API; CP2 có hồi quy khi sửa prompt (v2 đạt 95%, v3 còn 90%). Với CP3–CP4, test mock và bộ case hữu hạn chưa phản ánh hết dữ liệu thực tế. CP5 cần kiểm tra thêm trải nghiệm UI và hội thoại liên tục. Bằng chứng tool mới, group eval và live chat trong báo cáo hiện còn cần bổ sung.
+- **Hạn chế qua các checkpoint:** CP1 phụ thuộc kết nối và khả năng truy cập API; CP2 có hồi quy khi sửa prompt (v2 đạt 95%, v3 còn 90%). Với CP3–CP4, test mock và bộ case hữu hạn chưa phản ánh hết dữ liệu thực tế. CP5 cần kiểm tra thêm trải nghiệm UI và hội thoại liên tục.
 
 - **Failure cần review thủ công:** Chất lượng tóm tắt, độ chính xác của nguồn, câu hỏi làm rõ có hợp lý không, xác nhận có đúng nội dung và nơi gửi không, cùng khả năng UI hiển thị lỗi thật. Chọn đúng tool chưa bảo đảm kết quả cuối đáp ứng yêu cầu.
 
