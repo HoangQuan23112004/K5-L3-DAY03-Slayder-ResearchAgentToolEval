@@ -41,6 +41,29 @@ Sao chép mục dưới đây cho từng thành viên.
 
 -
 
+## DaoNguyenQuangThanh - 2A202603754
+
+### Phần việc phụ trách
+
+- Thực hiện Checkpoint 3 (CP3): Viết tool mới và lập unit test cho tool mới
+- Phụ trách phát triển và tích hợp 3 tool mới cho agent: `dedupe`, `sentiment` và `export_file`.
+- Với mỗi tool, lập ra 3 test case với happy path, missing input và failure path tương ứng
+
+### Đóng góp cụ thể
+
+- `dedupe`: triển khai tool loại bỏ URL tracking và các item trùng lặp tương tự bằng cách chuẩn hóa URL, bỏ tham số theo dõi (`utm_`, `fbclid`, ...), so sánh độ tương đồng text bằng Jaccard similarity, và trả về danh sách item đã giữ lại / đã loại bỏ cùng metadata `removed_count`, `skipped_invalid`.
+- `sentiment`: triển khai phân loại cảm xúc tiếng Anh và tiếng Việt với từ vựng và quy tắc negation/booster; hỗ trợ đầu vào `items` hoặc `text`, trả về `overall` và nhãn `positive/neutral/negative`.
+- `export_file`: triển khai export ra file JSON/HTML/PDF an toàn, chuẩn hóa tên file, tránh overwrite bằng unique path, và có cảnh báo khi thiếu phông chữ Unicode trong PDF.
+- Cập nhật `starter_v0/tests/test_tools_todo.py` cho các tool mới với ít nhất 3 testcase theo hướng happy path, bad input, failure path (không raise, trả error dict).
+- Đồng bộ khai báo tool trong `starter_v0/artifacts/tools.yaml` và `starter_v0/tools/__init__.py` để model có thể gọi đúng tên tool.
+
+### Bằng chứng
+
+- Commit chính: `e89887e` — `3 new tools: dedupe, sentiment and export_file`
+- Declare tool: `starter_v0/tools/__init__.py`,
+- Lập tool artifact: `starter_v0/artifacts/tools.yaml`
+- TOOL.md và tool.py trong folder tương ứng: `starter_v0/tools/dedupe/tool.py`, `starter_v0/tools/sentiment/tool.py`, `starter_v0/tools/export_file/tool.py`
+- 9 unit test tương ứng với 3 tool trên: `starter_v0/tests/test_tools_todo.py`.
 
 ## NguyenQuangHuy-2A202603768
 
