@@ -124,11 +124,11 @@ Các transcript khác có nhãn v0–v3 nhưng dùng cùng hash prompt và tool 
 
 | Item | Evidence File | What Worked | Risk / Guardrail |
 |---|---|---|---|
-| Tool mới (`tools/<tên>/`) |  |  |  |
-| Unit test tool mới (≥ 3 test/tool) | `pytest` output (0 failed) |  |  |
-| UI (lệnh chạy + link dùng thử) | [app.py](../../starter_v0/app.py), [requirements.txt](../../starter_v0/requirements.txt), lệnh và link ở A1, [transcript 4 lượt](../../starter_v0/transcripts/v3_openrouter_20261111T011751683948.transcript.json) | UI mở được trên máy và qua link tunnel; ghi transcript có lượt hỏi URL, bổ sung URL, tìm tin và xin xác nhận gửi. | Link tunnel tạm thời; UI hiển thị `provider_error` khi lỗi provider và không nhập API key vào chat. |
+| Ba tool mới (`dedupe`, `sentiment`, `export_file`) | [dedupe](../../starter_v0/tools/dedupe/tool.py), [sentiment](../../starter_v0/tools/sentiment/tool.py), [export_file](../../starter_v0/tools/export_file/tool.py), đăng ký tại [tools/__init__.py](../../starter_v0/tools/__init__.py) và khai báo tại [tools.yaml](../../starter_v0/artifacts/tools.yaml) | `dedupe` loại URL có tracking và nội dung tương tự; `sentiment` gắn nhãn văn bản tiếng Anh/Việt; `export_file` xuất JSON, HTML hoặc PDF. | `dedupe` dùng ngưỡng tương đồng văn bản; `sentiment` dựa trên từ điển nên không hiểu đầy đủ ngữ cảnh; PDF cần `reportlab` và font Unicode phù hợp. |
+| Unit test cho tool mới (3 test/tool, tổng 9) | [test_tools_todo.py](../../starter_v0/tests/test_tools_todo.py) — lệnh chạy: `pytest -q tests/test_tools_todo.py -k "dedupe or sentiment or export_file"` từ `starter_v0/` | Chạy trong virtual environment Python 3.12: **9 passed, 14 deselected**. Mỗi tool có test đường đi chính, input không hợp lệ và lỗi; export còn kiểm tra PDF/HTML, tên file và không ghi đè. | Chỉ chạy 9 test cho ba tool mới; 14 test còn lại trong file không thuộc phạm vi chạy này. |
+| UI (lệnh chạy + link dùng thử) | [app.py](../../starter_v0/app.py), [requirements.txt](../../starter_v0/requirements.txt), lệnh và link ở A1, [transcript 4 lượt](../../starter_v0/transcripts/v3_openrouter_20261111T011751683948.transcript.json) | Đã chạy `streamlit run app.py` trong virtual environment Python 3.12, xác nhận `http://127.0.0.1:8501/_stcore/health` trả `200 ok`; mở UI trên browser thấy tiêu đề Slayder, lời chào, các gợi ý và ô chat. Transcript cũng ghi nhận hỏi URL, đọc URL được cung cấp, tìm tin và xin xác nhận gửi. | Máy hiện không có `starter_v0/.env`, nên lần chạy này chỉ xác nhận UI render, chưa xác minh gửi yêu cầu tới model. Link tunnel ở A1 là link tạm thời; không nhập API key vào chat. |
 
-Tool unit tests: số test đã viết, và một ví dụ lỗi mà unit test bắt được nhưng eval không bắt được.
+Ví dụ lỗi mà unit test bắt được nhưng eval không bắt được: gọi `export_file` hai lần cùng tên không được ghi đè tệp đã có; test xác nhận lần thứ hai được lưu với hậu tố `_1`. Eval routing chỉ kiểm tra việc chọn tool/tham số, không kiểm tra va chạm tên tệp hay tính toàn vẹn của tệp đã xuất.
 
 ### B5. Bonus Evidence
 
