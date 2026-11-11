@@ -26,7 +26,7 @@ Từ `starter_v0/`, cài dependency bằng `python -m pip install -r requirement
 
 > Dán link public để team khác mở thử ngay. Cách deploy nhanh bằng Cloudflare Tunnel xem README. Nếu deploy Vercel/Streamlit Cloud thì dán link đó.
 >
-> URL: https://spoke-dod-vsnet-forget.trycloudflare.com/
+> URL: https://slayder-researchagenttooleval.streamlit.app/
 
 
 ### A2. Tool agent có
