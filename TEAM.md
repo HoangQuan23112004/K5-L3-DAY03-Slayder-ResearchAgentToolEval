@@ -2,10 +2,10 @@
 
 ## Thông tin nhóm
 
-- Tên nhóm:
-- Lớp: L3A / L3B
-- Repo nhóm: `K5-L3A-DAY03-TenNhom-ResearchAgentToolEval` hoặc `K5-L3B-DAY03-TenNhom-ResearchAgentToolEval` (xem [SUBMISSION.md](SUBMISSION.md))
-- URL repo, nhánh nộp, commit chốt:
+- Tên nhóm: Slayder
+- Lớp: L3B
+- Repo nhóm: K5-L3-DAY03-Slayder-ResearchAgentToolEval (xem [SUBMISSION.md](SUBMISSION.md))
+- URL repo, nhánh nộp, commit chốt:https://github.com/HoangQuan23112004/K5-L3-DAY03-Slayder-ResearchAgentToolEval
 
 ## Thành viên
 
