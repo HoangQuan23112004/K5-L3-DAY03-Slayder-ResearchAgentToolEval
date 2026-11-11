@@ -195,4 +195,12 @@ Chi tiết đóng góp của từng thành viên nằm trong [TEAM.md](../../TEA
 
 ## 8. Tài liệu tham khảo
 
--
+- Tài liệu bài lab: `README.md`, `CHECKPOINTS.md`, `RUBRIC.md`, `RULES.md`.
+- Hướng dẫn cấu hình API: `docs/TOOL-SETUP.md`.
+- Hướng dẫn xây dựng tool: `starter_v0/tools/README.md`.
+- Ví dụ unit test: `starter_v0/tests/test_tools_examples.py` và `conftest.py`.
+- OpenRouter — Tool Calling: https://openrouter.ai/blog/tutorials/tool-calling/
+- pytest — Fixtures: https://www.pytest.org/en/latest/how-to/fixtures.html
+- pytest — Monkeypatch/mock: https://pytest.org/en/latest/how-to/monkeypatch.html
+- Streamlit — Deployment: https://docs.streamlit.io/deploy/streamlit-community-cloud/get-started
+  
